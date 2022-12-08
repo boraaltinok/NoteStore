@@ -47,7 +47,7 @@ class _AddNotePageState extends State<AddNotePage> {
             : widget.scannedText);
     if (widget.toBeEditedNote != null) {
       notePageEditingController = TextEditingController(
-          text: widget.toBeEditedNote?.notePage.toString());
+          text: widget.toBeEditedNote?.notePage == null ? "":widget.toBeEditedNote?.notePage.toString());
       noteTitleEditingController = TextEditingController(
           text: widget.toBeEditedNote?.noteTitle.toString());
       noteTextEditingController =
@@ -123,8 +123,8 @@ class _AddNotePageState extends State<AddNotePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Title',
+                              const Text(
+                                'Başlık',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14.0,
@@ -145,7 +145,7 @@ class _AddNotePageState extends State<AddNotePage> {
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
-                                  hintText: "enter title(optional)",
+                                  hintText: "başlık girin(opsiyonel)",
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide:
@@ -173,7 +173,7 @@ class _AddNotePageState extends State<AddNotePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              'Note',
+                              'Not',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14.0,
@@ -189,7 +189,7 @@ class _AddNotePageState extends State<AddNotePage> {
                                 controller: noteTextEditingController,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please input note';
+                                    return 'Not girin';
                                   }
                                   return null;
                                 },
@@ -199,7 +199,7 @@ class _AddNotePageState extends State<AddNotePage> {
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
-                                  hintText: "enter note",
+                                  hintText: "Not girin",
                                   fillColor: Colors.white,
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -231,7 +231,7 @@ class _AddNotePageState extends State<AddNotePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Page Number',
+                                'Sayfa No',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14.0,
@@ -253,7 +253,7 @@ class _AddNotePageState extends State<AddNotePage> {
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
-                                  hintText: "enter page number(optional)",
+                                  hintText: "Sayfa no girin(opsiyonel)",
                                   fillColor: Colors.white,
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -281,8 +281,8 @@ class _AddNotePageState extends State<AddNotePage> {
                           child: Container(
                             padding: EdgeInsets.all(16),
                             child: DropDownFormField(
-                              titleText: 'Note Type',
-                              hintText: 'Please choose one',
+                              titleText: 'Not Tipi',
+                              hintText: 'Birini seçin',
                               value: _dropDownResult,
                               onSaved: (value) {},
                               onChanged: (value) {
@@ -292,11 +292,11 @@ class _AddNotePageState extends State<AddNotePage> {
                               },
                               dataSource: const [
                                 {
-                                  "display": "Citation",
+                                  "display": "Alıntı",
                                   "value": "alinti",
                                 },
                                 {
-                                  "display": "Source",
+                                  "display": "Kaynak",
                                   "value": "kaynakca",
                                 },
                                 /*{
@@ -304,7 +304,7 @@ class _AddNotePageState extends State<AddNotePage> {
                                   "value": "özel_notum",
                                 },*/
                                 {
-                                  "display": "Other",
+                                  "display": "Diğer",
                                   "value": "diger",
                                 },
                               ],
@@ -325,7 +325,7 @@ class _AddNotePageState extends State<AddNotePage> {
                                   if (widget.toBeEditedNote == null) {
                                     const snackBar = SnackBar(
                                         content: Text(
-                                            'Note Have been Successfully Added'));
+                                            'Not Başarılı Şekilde Eklendi'));
 
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snackBar);
@@ -343,9 +343,10 @@ class _AddNotePageState extends State<AddNotePage> {
                                   } else if (widget.toBeEditedNote != null) {
                                     const snackBar = SnackBar(
                                         content: Text(
-                                            'Note Have been Successfully Edited'));
+                                            'Not Başarılı Şekilde Editlendi'));
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snackBar);
+                                    print('page : ${notePageEditingController.text}');
                                     Note editedNote = Note(
                                         bookId: widget.bookId!,
                                         addedBy: widget.toBeEditedNote!.addedBy,
@@ -354,8 +355,8 @@ class _AddNotePageState extends State<AddNotePage> {
                                             noteTextEditingController.text,
                                         noteTitle:
                                             noteTitleEditingController.text,
-                                        notePage: int.parse(
-                                            notePageEditingController.text),
+                                        notePage: notePageEditingController.text != "" ? int.parse(
+                                            notePageEditingController.text) : null,
                                         dateAdded:
                                             widget.toBeEditedNote!.dateAdded);
                                     updateNote(widget.toBeEditedNote!.noteId!,
@@ -370,9 +371,9 @@ class _AddNotePageState extends State<AddNotePage> {
                               },
                               label: widget.toBeEditedNote == null
                                   ? const Text(
-                                      "ADD NOTE",
+                                      "NOT EKlE",
                                     )
-                                  : const Text("EDIT NOTE"),
+                                  : const Text("NOT EDİTLE"),
                               backgroundColor: Colors.black,
                             ),
                           ),

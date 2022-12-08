@@ -71,7 +71,7 @@ class AddBookPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Book Name',
+                            'Kitap İsmi',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 14.0,
@@ -82,7 +82,7 @@ class AddBookPage extends StatelessWidget {
                             controller: bookNameEditingController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please input book name';
+                                return 'Kitap ismi girin';
                               }
                               return null;
                             },
@@ -92,7 +92,7 @@ class AddBookPage extends StatelessWidget {
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 20),
-                              hintText: "enter book name",
+                              hintText: "Kitap ismi girin",
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide:
@@ -121,7 +121,7 @@ class AddBookPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Book Author',
+                            'Yazar',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 14.0,
@@ -137,7 +137,7 @@ class AddBookPage extends StatelessWidget {
                               controller: bookAuthorEditingController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please input book author';
+                                  return 'Yazar ekleyin';
                                 }
                                 return null;
                               },
@@ -147,7 +147,7 @@ class AddBookPage extends StatelessWidget {
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 20),
-                                hintText: "enter book author",
+                                hintText: "Yazar girin",
                                 fillColor: Colors.white,
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -182,7 +182,7 @@ class AddBookPage extends StatelessWidget {
                             if (formKey.currentState!.validate()) {
                               const snackBar = SnackBar(
                                   content: Text(
-                                      'Book Have been Successfully Added'));
+                                      'Kitap Başarılı Şekilde Eklendi'));
 
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);
@@ -195,7 +195,7 @@ class AddBookPage extends StatelessWidget {
                             }
                           },
                           label: const Text(
-                            "ADD THE BOOK",
+                            "KİTAP EKLE",
                           ),
                           backgroundColor: Colors.black,
                         ),

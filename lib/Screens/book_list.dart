@@ -37,7 +37,7 @@ class _BookListState extends State<BookList> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
                     Text(
-                      "Your Books",
+                      "KİTAPLARIM",
                       style: TextStyle(fontSize: 32, color: Color(0xff00386B)),
                     )
                   ],

@@ -104,7 +104,7 @@ class _BooksPageState extends State<BooksPage> {
                   child: const Icon(
                     (Icons.note),
                   ),
-                  label: "Manual Entry"),
+                  label: "Manual Gir"),
               SpeedDialChild(
                   onTap: () {
                     Navigator.push(
@@ -113,7 +113,7 @@ class _BooksPageState extends State<BooksPage> {
                             builder: (context) => const ScanBookPage()));
                   },
                   child: const Icon(Icons.insert_photo),
-                  label: "Scan Barcode"),
+                  label: "Barkod Okut"),
             ],
           )),
     );

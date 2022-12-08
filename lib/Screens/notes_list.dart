@@ -77,7 +77,7 @@ class _NotesListState extends State<NotesList> {
                         inactiveBgColor: Colors.grey,
                         inactiveFgColor: Color(0xff454545),
                         totalSwitches: 3,
-                        labels: ['Citation', 'Source', 'Other'],
+                        labels: ['Alıntı', 'Kaynak', 'Diğer'],
                         //icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
                         activeBgColors: const [
                           [Color(0xff00386B)],

@@ -130,7 +130,7 @@ class _NotesPageState extends State<NotesPage> {
                   child: const Icon(
                     (Icons.note),
                   ),
-                  label: "Manual Entry"),
+                  label: "Manual Gir"),
               SpeedDialChild(
                   onTap: () {
                     Navigator.push(
@@ -139,7 +139,7 @@ class _NotesPageState extends State<NotesPage> {
                             builder: (context) => ScanTextPage(widget.bookId)));
                   },
                   child: const Icon(Icons.insert_photo),
-                  label: "Record by Photo"),
+                  label: "Fotoğrafla Kayıt"),
               SpeedDialChild(
                   onTap: () {
                     Navigator.push(
@@ -149,7 +149,7 @@ class _NotesPageState extends State<NotesPage> {
                                 SpeechToTextScreen(bookId: widget.bookId)));
                   },
                   child: const Icon(Icons.mic),
-                  label: "Record Voice")
+                  label: "Sesle Kayıt")
             ],
           )),
     );

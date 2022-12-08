@@ -30,7 +30,7 @@ class _ScanTextPageState extends State<ScanTextPage> {
       appBar: AppBar(
         backgroundColor: Color(0xfffaf0e6),
         centerTitle: true,
-        title: const Text("Scan Your Text", style: TextStyle(color: Colors.black),),
+        title: const Text("Fotoğrafla Kayıt", style: TextStyle(color: Colors.black),),
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
@@ -98,7 +98,7 @@ class _ScanTextPageState extends State<ScanTextPage> {
                                   size: 30,
                                 ),
                                 Text(
-                                  "Gallery",
+                                  "Galeri",
                                   style: TextStyle(
                                       fontSize: 13, color: Colors.grey[600]),
                                 )
@@ -132,7 +132,7 @@ class _ScanTextPageState extends State<ScanTextPage> {
                                   size: 30,
                                 ),
                                 Text(
-                                  "Camera",
+                                  "Kamera",
                                   style: TextStyle(
                                       fontSize: 13, color: Colors.grey[600]),
                                 )
@@ -148,7 +148,7 @@ class _ScanTextPageState extends State<ScanTextPage> {
                         },
                         backgroundColor: const Color(0xfffaf0e6),
                         foregroundColor: Colors.black,
-                        tooltip: 'Crop',
+                        tooltip: 'Krop',
                         child: const Icon(Icons.crop),
                       ),
                     )

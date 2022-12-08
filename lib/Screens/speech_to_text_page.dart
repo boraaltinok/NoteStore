@@ -59,7 +59,7 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
   };
 
   late stt.SpeechToText _speech;
-  String _text = 'Press the button and start speaking';
+  String _text = 'Bir kere basıp konuşmaya başlayın';
   double _confidence = 1.0;
 
   @override
@@ -103,7 +103,7 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
             color: Colors.black, //change your color here
           ),
           title: Text(
-            'Confidence: ${(_confidence * 100.0).toStringAsFixed(1)}%',
+            'Başarı: ${(_confidence * 100.0).toStringAsFixed(1)}%',
             style: const TextStyle(color: Colors.black),
           ),
           actions: [
@@ -126,7 +126,7 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
                           builder: (context) => AddNotePage(
                                 bookId: widget.bookId,
                                 spokenText: _text ==
-                                        "Press the button and start speaking"
+                                        "Bir kere basıp konuşmaya başlayın"
                                     ? ""
                                     : _text,
                               )));
