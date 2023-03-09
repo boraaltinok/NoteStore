@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "952514182741",
+    "project_id": "notestore-eea0e",
+    "storage_bucket": "notestore-eea0e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952514182741:android:55ab03af88732a975f9edc",
+        "android_client_info": {
+          "package_name": "com.example.my_notes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952514182741-6em5p56m1eq8ajendp9n4c9f85hhtt7b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzd2qv6FL34SmImrV2C6nEGz1cTE36F8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952514182741-6em5p56m1eq8ajendp9n4c9f85hhtt7b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "952514182741-1eci3gkai3iljoudjugn74psseche2m6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.myNotes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

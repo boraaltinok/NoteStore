@@ -1,4 +1,5 @@
 import 'package:my_notes/Models/Book.dart';
+import 'package:my_notes/constants.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:my_notes/Models/Note.dart';
@@ -33,7 +34,7 @@ class NotesDatabase {
 
     await db.execute('''
     CREATE TABLE $tableBooks (
-    ${BookFields.bookId} $idType,
+    ${BookFields.bookId} $textType,
     ${BookFields.bookName} $textType,
     ${BookFields.bookAuthor} $textType,
     ${BookFields.dateAdded} $textType
@@ -79,7 +80,7 @@ class NotesDatabase {
     print("ABOUT TO CREATE A NOTE = ${book.toJson()}");
 
     final bookId = await db.insert(tableBooks, book.toJson());
-    return book.copy(bookId: bookId);
+    return book.copy(bookId: bookId.toString());
   }
 
   Future<Book?> readBook(int bookId) async {
@@ -95,7 +96,7 @@ class NotesDatabase {
     if (maps.isNotEmpty) {
       return Book.fromJson(maps.first);
     } else {
-      return Book(bookId: -1, dateAdded: DateTime.now());
+      return Book(bookId: "", dateAdded: DateTime.now(), userId: authController.user.uid);
       //return null;
       //throw Exception('BOOK WITH ID $bookId not found');
     }
@@ -126,7 +127,7 @@ class NotesDatabase {
     );
   }
 
-  Future<Note> createNote(Note note) async {
+  /*Future<Note> createNote(Note note) async {
     final db = await instance.database;
     //TODO ADD THE CHECK IF BOOK ID IS VALID
     //Book? returnedBook = await readBook(note.bookId); //if bookId returns -1 then book does not exist
@@ -141,7 +142,7 @@ class NotesDatabase {
     else{
       return note.copy(noteId: -1);
     }*/
-  }
+  }*/
 
   Future<Note> readNote(int noteId) async {
     final db = await instance.database;
