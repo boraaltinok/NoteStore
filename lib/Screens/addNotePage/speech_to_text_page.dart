@@ -121,7 +121,7 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
                                     ? ""
                                     : _text,
                               )));*/
-                  Navigator.push(
+                  /*Navigator.push(
                       context,
                       MaterialPageRoute(
                           //builder: (context) => AddNotePage(widget.bookId)));
@@ -131,7 +131,7 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
                                         "Press the button and start speaking"
                                     ? ""
                                     : _text,
-                              )));
+                              )));*/
                 },
                 icon: const Icon(
                   Icons.check_circle_outline,

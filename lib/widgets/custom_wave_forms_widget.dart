@@ -1,9 +1,9 @@
-import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui show Gradient;
 import '../Utils/ColorsUtility.dart';
 import '../controllers/speech_controller.dart';
+import 'package:audio_waveforms/audio_waveforms.dart';
+
 
 class CustomWaveformsWidget extends StatelessWidget {
   const CustomWaveformsWidget({

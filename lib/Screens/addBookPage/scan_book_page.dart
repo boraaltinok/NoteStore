@@ -94,18 +94,19 @@ class _ScanBookPageState extends State<ScanBookPage> {
         ],
       ),
       body: MobileScanner(
-        allowDuplicates: true,
+
+        //allowDuplicates: true,
         controller: cameraController,
         onDetect: _foundBarcode,
       ),
     );
   }
 
-  Future<void> _foundBarcode(
-      Barcode barcode, MobileScannerArguments? args) async {
+  void _foundBarcode(
+      BarcodeCapture barcode) async {
     ///open screen
     if (!_screenOpened) {
-      final String code = barcode.rawValue ?? "----";
+      final String code = barcode.raw ?? "----";
       debugPrint('Barcode found $code');
       _screenOpened = true;
       fetchBooksInfo(code);

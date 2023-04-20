@@ -1,6 +1,3 @@
-import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:my_notes/Utils/PaddingUtility.dart';
@@ -9,16 +6,14 @@ import 'package:my_notes/Utils/TextUtility.dart';
 import 'package:my_notes/controllers/speech_controller.dart';
 import 'package:my_notes/enums/noteActionEnums.dart';
 import 'package:my_notes/enums/noteTypeEnums.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 import 'dart:ui' as ui show Gradient;
 import '../../Utils/ColorsUtility.dart';
 import '../../constants.dart';
 import '../../controllers/note_controller.dart';
 import '../../widgets/addNotePagesAppBar.dart';
-import '../../widgets/custom_waverforms_widget.dart';
+import '../../widgets/custom_wave_forms_widget.dart';
 
 class AddSpeechPage extends StatefulWidget {
   //final TextEditingController noteTitleController;
