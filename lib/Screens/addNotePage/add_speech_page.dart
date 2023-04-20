@@ -1,129 +1,176 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:my_notes/Utils/PaddingUtility.dart';
+import 'package:my_notes/Utils/TextStyleUtility.dart';
+import 'package:my_notes/Utils/TextUtility.dart';
 import 'package:my_notes/controllers/speech_controller.dart';
+import 'package:my_notes/enums/noteActionEnums.dart';
+import 'package:my_notes/enums/noteTypeEnums.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
-
+import 'dart:ui' as ui show Gradient;
+import '../../Utils/ColorsUtility.dart';
+import '../../constants.dart';
 import '../../controllers/note_controller.dart';
+import '../../widgets/addNotePagesAppBar.dart';
+import '../../widgets/custom_waverforms_widget.dart';
 
 class AddSpeechPage extends StatefulWidget {
-  const AddSpeechPage({Key? key}) : super(key: key);
+  //final TextEditingController noteTitleController;
+
+  const AddSpeechPage(
+      {Key? key, required this.noteAction /*required this.noteTitleController*/
+      })
+      : super(key: key);
+
+  final NoteAction noteAction;
 
   @override
   _AddSpeechPageState createState() => _AddSpeechPageState();
 }
 
 class _AddSpeechPageState extends State<AddSpeechPage> {
-  /*final recorder = FlutterSoundRecorder();
-
-  final audioPlayer = AudioPlayer();
-  bool isPlaying = false;
-  Duration duration = Duration.zero;
-  Duration position = Duration.zero;
-
-  bool isRecorderReady = false;*/
-
-  NoteController noteController = Get.put(NoteController());
-  SpeechController speechController = Get.put(SpeechController());
+  NoteController noteController = Get.find<NoteController>();
+  final SpeechController speechController = Get.put(SpeechController());
+  final loadingText = TextUtility.loadingText;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    speechController.initRecorder();
+    if (widget.noteAction == NoteAction.noteEdit) {
+      noteController.initTextEditingControllers(
+          noteAction: widget.noteAction, note: noteController.currentNote);
+    } else if (widget.noteAction == NoteAction.noteAdd) {
+      noteController.initTextEditingControllers(noteAction: widget.noteAction);
+    }
+    Future.delayed(Duration.zero, () async {
+      await speechController.initRecorder();
+    });
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    speechController.recorder.closeRecorder();
-    speechController.audioPlayer.dispose();
+    noteController.disposeTextEditingControllers();
+    speechController.disposeControllers();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-        return Scaffold(
-          backgroundColor: Colors.grey.shade900,
-          body: Center(
-            child: speechController.isRecorderReady == false ? Center(child: Text("loading")) :Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                StreamBuilder<RecordingDisposition>(
-                  stream: speechController.recorder.onProgress,
-                  builder: (context, snapshot) {
-                    final duration =
-                        snapshot.hasData ? snapshot.data!.duration : Duration.zero;
-                    print("snapshot = $snapshot");
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: buildAddNoteSheetsAppBar(),
+      body: Padding(
+          padding: PaddingUtility.scaffoldBodyGeneralPadding,
+          child: Obx(() {
+            return buildCenteredColumn();
+          })),
+      floatingActionButton: FloatingActionButton(
+        child: Obx(() {
+          if (NoteAction.noteAdd == widget.noteAction) {
+            return Icon(speechController.isRecording ? Icons.stop : Icons.mic);
+          } else {
+            return Icon(speechController.isPlaying
+                ? Icons.pause_circle_outline
+                : Icons.play_arrow_outlined);
+          }
+        }),
+        onPressed: () async {
+          if (NoteAction.noteAdd == widget.noteAction) {
+            await speechController.onPressRecordButton();
+          } else {
+            await speechController.onPressPlayAudioButton();
+          }
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
 
-                    print("again duration = $duration");
+  Center buildCenteredColumn() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          //Expanded(flex: 1, child: durationText()),
+          widget.noteAction == NoteAction.noteAdd
+              ? Expanded(
+            flex: 5,
+            child: speechController.isRecorderControllerReady == true
+                ? CustomWaveformsWidget(
+                speechController: speechController)
+                : buildCenteredLoadingText(),
+          )
+              : Expanded(
+              flex: 2,
+              child: Row(
+                children: [
+                  Expanded(child: Text(speechController.formattedTime(
+                      timeInSecond: speechController.position.inSeconds),
+                    style: TextStyleUtility.hintTextStyle,)),
+                  Expanded(
+                    flex: 6,
+                    child: Slider(
+                        min: 0,
+                        max: speechController.duration.inMilliseconds
+                            .toDouble(),
+                        activeColor: buttonColor,
+                        inactiveColor: borderColor,
+                        value:
+                        speechController.position.inMilliseconds.toDouble(),
+                        onChanged: (value) async {
+                          final position = Duration(
+                              milliseconds: value.toInt());
+                          await speechController.audioPlayer.seek(position);
 
-                    String twoDigits(int n) => n.toString().padLeft(0);
-                    final twoDigitMinutes =
-                        twoDigits(duration.inMinutes.remainder(60));
+                          await speechController.audioPlayer.resume();
+                        }),
+                  ),
+                  Expanded(child: Text(speechController.formattedTime(
+                      timeInSecond: noteController.currentNote.speechDuration ??
+                          speechController.duration.inSeconds),
+                    style: TextStyleUtility.hintTextStyle,)),
 
-                    final twoDigitSeconds =
-                        twoDigits(duration.inSeconds.remainder(60));
-                    /*return Text(
-                      '$twoDigitMinutes:$twoDigitSeconds',
-                      style: const TextStyle(
-                          fontSize: 80, fontWeight: FontWeight.bold),
-                    );*/
-                    return Text('${duration.inSeconds}s');
-                  },
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-                ElevatedButton(
-                  child: Icon(speechController.isRecording ? Icons.stop : Icons.mic),
-                  onPressed: () async {
-                    if (speechController.recorder.isRecording) {
-                      String path = await speechController.stop();
-                      String randomId = const Uuid().v4();
+                ],
+              )),
+          Expanded(flex: 1, child: SizedBox())
+        ],
+      ),
+    );
+  }
 
-                      /*String downloadUrl = await noteController
-                          .uploadSpeechNoteToStorage(randomId, path);*/
-                      String downloadUrl = await noteController.uploadNote(bookId: noteController.bookId, noteText: "here", speechPath: path, noteType: "speech");
-                      //print("uploaded $downloadUrl");
-                      if (speechController.isPlaying) {
-                        await speechController.audioPlayer.pause();
-                      } else {
-                        print("playingg");
-                        /*await speechController.audioPlayer.play(UrlSource(
-                          "$downloadUrl"
-                        ));*/
-                      }
-                      Get.back();
+  AddNoteSheetsAppBar buildAddNoteSheetsAppBar() {
+    return AddNoteSheetsAppBar(
+      noteTitleController: noteController.noteTitleController,
+      noteAction: widget.noteAction,
+      noteTypeEnum:
+      NoteTypeEnum.speechNote, /*speechController: speechController*/
+    );
+  }
 
-                    } else {
-                      await speechController.record();
-                    }
-                  },
-                ),
-                /*ElevatedButton(
-                  child: Icon(speechController.isPlaying ? Icons.stop : Icons.mic),
-                  onPressed: () async {
-                    if (speechController.isPlaying) {
-                      await speechController.audioPlayer.pause();
-                    } else {
-                      print("playingg");
-                      await speechController.audioPlayer.play(UrlSource(
-                        "https://firebasestorage.googleapis.com/v0/b/notestore-eea0e.appspot.com/o/speechNotes%2F18e9a27d-65f1-4a9d-88b9-0510dbb4151b?alt=media&token=24fe4968-d1b2-45d8-8da1-67122e74a805"
-                      ));
-                    }
-                  },
-                ),*/
-              ],
-            ),
-          ),
-        );
-      }
+  Center buildCenteredLoadingText() {
+    return Center(
+      child: Text(loadingText),
+    );
+  }
+
+  Text durationText() {
+    /*'${(speechController.duration.inSeconds~/60)}:${speechController.duration.inSeconds % 60}s',
+      style: TextStyle(fontSize: 30, color: ColorsUtility.blackText),*/
+    return Text(
+      widget.noteAction == NoteAction.noteAdd
+          ? '${speechController.duration.inSeconds}s'
+          : '${speechController.position.inSeconds}:${speechController.duration
+          .inSeconds}s',
+      style: TextStyle(fontSize: 30, color: ColorsUtility.blackText),
     );
   }
 }

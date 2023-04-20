@@ -16,10 +16,9 @@ class _CountryPickerState extends State<CountryPicker> {
   String selectedCountry = "";
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: 60,
-      margin: const EdgeInsets.only(left: 20, right: 20),
       child: ElevatedButton(
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(backgroundColor)),
@@ -31,7 +30,6 @@ class _CountryPickerState extends State<CountryPicker> {
             favorite: <String>['TR'],
             //Optional. Shows phone code before the country name.
             onSelect: (Country country) {
-              print('Select country: ${country.displayName}');
               widget.onCountryChanged(country.name);
               selectedCountry = country.name;
               setState(() {
@@ -42,7 +40,7 @@ class _CountryPickerState extends State<CountryPicker> {
             countryListTheme: CountryListThemeData(
               // Optional. Sets the border radius for the bottomsheet.
               textStyle: TextStyle(color: buttonColor),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(40.0),
                 topRight: Radius.circular(40.0),
               ),
@@ -52,9 +50,9 @@ class _CountryPickerState extends State<CountryPicker> {
                 filled: true,
                 fillColor: buttonColor,
                 labelText: 'Search',
-                labelStyle: TextStyle(color: borderColor,),
+                labelStyle: const TextStyle(color: borderColor,),
                 hintText: 'Start typing to search',
-                hintStyle: TextStyle(color: borderColor),
+                hintStyle: const TextStyle(color: borderColor),
                 prefixIcon: const Icon(Icons.search, color: borderColor,),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
@@ -63,7 +61,7 @@ class _CountryPickerState extends State<CountryPicker> {
                 ),
               ),
               // Optional. Styles the text in the search field
-              searchTextStyle: TextStyle(
+              searchTextStyle: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,
               ),

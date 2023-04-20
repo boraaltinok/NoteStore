@@ -1,10 +1,13 @@
 import 'package:country_picker/country_picker.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:my_notes/Utils/PaddingUtility.dart';
+import 'package:my_notes/extensions/string_extension.dart';
 import 'package:my_notes/widgets/country_picker.dart';
 import 'dart:io';
 import '../../../constants.dart';
+import '../../lang/locale_keys.g.dart';
 import '../../widgets/gender_picker.dart';
 import '../../widgets/text_input_field.dart';
 import 'login_screen.dart';
@@ -20,27 +23,34 @@ class SignUpScreen extends StatelessWidget {
   String country = "";
   String gender = "";
 
+
+  String txtAppName = "NoteStore";
+  String txtRegister = LocaleKeys.text1.locale;
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       return Scaffold(
         body: SingleChildScrollView(
-          child: Container(
-            alignment: Alignment.center,
+          child: Padding(
+            padding: PaddingUtility.scaffoldBodyGeneralPadding,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(
                   height: 30,
                 ),
-                Text("NoteStore",
+                Text(txtAppName,
                     style: TextStyle(
                         fontSize: 35,
                         color: buttonColor,
                         fontWeight: FontWeight.w900)),
                 Text(
-                  'Register',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900, color: buttonColor),
+                  txtRegister,
+                  style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w900,
+                      color: buttonColor),
                 ),
                 const SizedBox(
                   height: 15,
@@ -49,17 +59,18 @@ class SignUpScreen extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 66,
-                      backgroundColor: buttonColor,
+                      backgroundColor: Colors.red,
                       child: CircleAvatar(
                         radius: 64,
                         backgroundImage:
                             //NetworkImage(authController.profilePhotoPath.value),
-                            (authController.profilePhotoPath !=
+                            (authController.profilePhotoPath.value !=
                                     "https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png")
-                                ? Image.file(File(authController.profilePhotoPath
+                                ? Image.file(File(authController
+                                        .profilePhotoPath
                                         .toString()))
                                     .image
-                                : Image.asset('assets/images/defaultIcon.jpg')
+                                : Image.asset('assets/logo.png')
                                     .image,
                         backgroundColor: backgroundColor,
                       ),
@@ -80,9 +91,8 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(
                   height: 15,
                 ),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.only(left: 20, right: 20),
                   child: TextInputField(
                     controller: _userNameController,
                     labelText: 'Username',
@@ -92,9 +102,8 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(
                   height: 15,
                 ),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.only(left: 20, right: 20),
                   child: TextInputField(
                     controller: _emailController,
                     labelText: 'Email',
@@ -115,9 +124,8 @@ class SignUpScreen extends StatelessWidget {
                 GenderPicker(onGenderChanged: (newGender) {
                   gender = newGender;
                 }),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.only(left: 20, right: 20),
                   child: TextInputField(
                     controller: _passwordController,
                     labelText: 'Password',
@@ -128,9 +136,8 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(
                   height: 30,
                 ),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.only(left: 20, right: 20),
                   child: TextInputField(
                     controller: _verifyPasswordController,
                     labelText: 'Reenter Password',
@@ -150,18 +157,18 @@ class SignUpScreen extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       authController.registerUser(
-                              _userNameController.text,
-                              _emailController.text,
-                              _passwordController.text,
-                              authController.profilePhoto,
-                              country.toString(),
-                              gender.toString()
-                      );
+                          _userNameController.text,
+                          _emailController.text,
+                          _passwordController.text,
+                          authController.profilePhoto,
+                          country.toString(),
+                          gender.toString());
                     },
                     child: const Center(
                         child: Text(
                       "Register User",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                     )),
                   ),
                 ),

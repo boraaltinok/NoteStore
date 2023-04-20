@@ -62,7 +62,13 @@ dependencies:
   permission_handler: ^10.2.0
   audioplayers: ^3.0.1
   timeago: ^3.3.0
-  flutter_audio_waveforms: ^1.2.1+8
+  audio_waveforms: ^1.0.3
+  cached_network_image: ^3.2.3
+  lottie: ^2.3.0
+  easy_localization: ^3.0.1
+  connectivity_plus: ^3.0.4
+
+
 
 
 
@@ -96,6 +102,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - animations/
+    - assets/lang/
     - assets/logo2.png
     - assets/logo.png
     - assets/logo3.png

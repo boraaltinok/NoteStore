@@ -21,7 +21,7 @@ class TextInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      style: TextStyle(color: Colors.black),
+      style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
           labelText: labelText,
           prefixIcon: Icon(icon, color: buttonColor,),

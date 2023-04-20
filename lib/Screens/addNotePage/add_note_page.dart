@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_notes/Screens/bookPage/books_page.dart';
 import 'package:my_notes/Screens/notesPage/notes_page.dart';
+import 'package:my_notes/enums/noteTypeEnums.dart';
 
 import '../../Databases/NotesDatabase.dart';
 import '../../Models/Book.dart';
@@ -338,9 +339,9 @@ class _AddNotePageState extends State<AddNotePage> {
 
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snackBar);
-                                    noteController.uploadNote(bookId: widget.book!.bookId!, noteText: noteTextEditingController.text,
+                                    noteController.uploadNote(noteText: noteTextEditingController.text,
                                         noteTitle: noteTitleEditingController.text,notePage: notePageEditingController.text != "" ? int.parse(
-                                          notePageEditingController.text) : null, imagePath: noteController.imagePath, noteType: "text");
+                                          notePageEditingController.text) : null, imagePath: noteController.imagePath, noteTypeEnum: NoteTypeEnum.manuelNote);
                                     /*addNote(
                                         bookId: widget.bookId!,
                                         noteTitle: noteTitleEditingController.text,

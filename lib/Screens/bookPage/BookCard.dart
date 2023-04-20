@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/Models/Book.dart';
@@ -39,39 +40,39 @@ class BookCard extends StatelessWidget {
 
   Positioned buildPositionedInfoButton(BuildContext context) {
     return Positioned(
-                right: 0,
-                bottom: 0,
-                child: IconButton(
-                    onPressed: () {
-                      onInfoPressed(context);
-                    },
-                    icon: Icon(
-                      Icons.info_sharp,
-                      color: ColorsUtility.appBarIconColor,
-                      size: Dimensions.iconSize24,
-                    )));
+        right: 0,
+        bottom: 0,
+        child: IconButton(
+            onPressed: () {
+              onInfoPressed(context);
+            },
+            icon: Icon(
+              Icons.info_sharp,
+              color: ColorsUtility.appBarIconColor,
+              size: Dimensions.iconSize24,
+            )));
   }
 
   Card buildBookCard(BoxConstraints constraints) {
     return Card(
-              elevation: 8,
-              //color: const Color(0xff68c1bc),
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 6,
-                    child: SizedBox(
-                      width: constraints.maxWidth,
-                      //height: constraints.maxHeight / 2,
-                      child: FittedBox(
-                        fit: BoxFit.fill,
-                        child: buildCoverImage(),
-                      ),
-                    ),
-                  ),
-                ],
+      elevation: 8,
+      //color: const Color(0xff68c1bc),
+      child: Column(
+        children: [
+          Expanded(
+            flex: 6,
+            child: SizedBox(
+              width: constraints.maxWidth,
+              //height: constraints.maxHeight / 2,
+              child: FittedBox(
+                fit: BoxFit.fill,
+                child: buildCoverImage(),
               ),
-            );
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void onInfoPressed(BuildContext context) {
@@ -117,8 +118,7 @@ class BookCard extends StatelessWidget {
                 Expanded(
                     child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                            "Added ${timeago.format(book.dateAdded)}",
+                        child: Text("Added ${timeago.format(book.dateAdded)}",
                             style: TextStyleUtility.textStyleBookInfoDialog)))
               ],
             )),
@@ -136,12 +136,18 @@ class BookCard extends StatelessWidget {
     );
   }
 
-  Image buildCoverImage() {
-    return Image.network(
-      book.bookCover == ""
+  CachedNetworkImage buildCoverImage() {
+    return CachedNetworkImage(
+      imageUrl: book.bookCover == ""
           ? "https://firebasestorage.googleapis.com/v0/b/notestore-eea0e.appspot.com/o/bookCovers%2Fdefault_background.png?alt=media&token=67331278-4a75-402b-abd4-43deefbf4a58"
           : book.bookCover!,
       fit: BoxFit.cover,
     );
+    /*Image.network(
+      book.bookCover == ""
+          ? "https://firebasestorage.googleapis.com/v0/b/notestore-eea0e.appspot.com/o/bookCovers%2Fdefault_background.png?alt=media&token=67331278-4a75-402b-abd4-43deefbf4a58"
+          : book.bookCover!,
+      fit: BoxFit.cover,
+    );*/
   }
 }

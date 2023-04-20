@@ -7,7 +7,7 @@ const String tableNotes = 'notes';
 class NoteFields {
 
   static final List<String> values = [
-    noteId, bookId, noteText, noteTitle, notePage, noteType, addedBy, dateAdded, speechPath, imagePath
+    noteId, bookId, noteText, noteTitle, notePage, noteType, addedBy, dateAdded, speechPath, imagePath, speechDuration
   ];
   static const String noteId = 'note_id';
   static const String bookId = 'book_id';
@@ -19,7 +19,7 @@ class NoteFields {
   static const String dateAdded = 'date_added';
   static const String speechPath = 'speech_path';
   static const String imagePath = 'image_path';
-
+  static const String speechDuration = 'speech_duration';
 
 }
 
@@ -34,10 +34,11 @@ class Note {
   final DateTime dateAdded;
   final String? speechPath;
   final String? imagePath;
+  final int? speechDuration;
 
   Note(
       {this.noteId, this.imagePath = '', this.speechPath= '', required this.bookId, required this.addedBy, required this.noteType, required this.noteText, this.noteTitle, this.notePage,
-        required this.dateAdded
+        required this.dateAdded, this.speechDuration = 0
       });
 
   Note copy({
@@ -50,7 +51,8 @@ class Note {
     String? addedBy,
     DateTime? dateAdded,
     String? speechPath,
-    String? imagePath
+    String? imagePath,
+    int? speechDuration
   }) =>
       Note(
           noteId: noteId ?? this.noteId,
@@ -62,7 +64,8 @@ class Note {
           addedBy: addedBy ?? this.addedBy,
           dateAdded: dateAdded ?? this.dateAdded,
           speechPath: speechPath ?? this.speechPath,
-          imagePath: imagePath ?? this.imagePath
+          imagePath: imagePath ?? this.imagePath,
+          speechDuration: speechDuration ?? this.speechDuration
       );
 
   Map<String, Object?> toJson() =>
@@ -76,18 +79,22 @@ class Note {
         NoteFields.addedBy: addedBy,
         NoteFields.dateAdded: dateAdded.toIso8601String(),
         NoteFields.speechPath: speechPath,
-        NoteFields.imagePath: imagePath
+        NoteFields.imagePath: imagePath,
+        NoteFields.speechDuration: speechDuration
       };
 
   static Note fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
     return Note(bookId: snapshot[NoteFields.bookId],
+        noteId: snapshot[NoteFields.noteId],
         addedBy: snapshot[NoteFields.addedBy],
         noteType: snapshot[NoteFields.noteType],
+        noteTitle: snapshot[NoteFields.noteTitle],
         noteText: snapshot[NoteFields.noteText],
         dateAdded: DateTime.parse(snapshot[NoteFields.dateAdded]),
         speechPath: snapshot[NoteFields.speechPath],
-        imagePath: snapshot[NoteFields.imagePath]);
+        imagePath: snapshot[NoteFields.imagePath],
+        speechDuration: snapshot[NoteFields.speechDuration]);
   }
 
   static Note fromJson(Map<String, Object?> json) =>
@@ -101,7 +108,8 @@ class Note {
         addedBy: json[NoteFields.noteText] as String,
         dateAdded: DateTime.parse(json[NoteFields.dateAdded] as String),
         speechPath: json[NoteFields.speechPath] as String,
-        imagePath: json[NoteFields.imagePath] as String
+        imagePath: json[NoteFields.imagePath] as String,
+        speechDuration: json[NoteFields.speechDuration] as int
       );
 
 

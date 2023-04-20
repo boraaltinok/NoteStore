@@ -75,7 +75,7 @@ class _BookListState extends State<BookList> {
                               book: bookController.bookList[i],
                               onDelete: () {
                                 bookController.deleteBook(
-                                    bookController.bookList[i].bookId!);
+                                    bookController.bookList[i]);
                               }),
                         ),
                         onTap: () {

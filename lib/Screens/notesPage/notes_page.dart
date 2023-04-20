@@ -1,16 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:my_notes/NoteSheets/image_to_text_sheet.dart';
+import 'package:my_notes/NoteSheets/speech_to_text_sheet.dart';
+import 'package:my_notes/Screens/addNotePage/add_image_page.dart';
 import 'package:my_notes/Screens/addNotePage/add_note_page.dart';
 import 'package:my_notes/Screens/addNotePage/add_speech_page.dart';
 import 'package:my_notes/Screens/addNotePage/scan_text_page.dart';
 import 'package:my_notes/Screens/addNotePage/speech_to_text_page.dart';
 import 'package:my_notes/Utils/ColorsUtility.dart';
+import 'package:my_notes/Utils/TextStyleUtility.dart';
+import 'package:my_notes/controllers/book_controller.dart';
 import 'package:my_notes/controllers/note_controller.dart';
+import 'package:my_notes/enums/noteActionEnums.dart';
+import 'package:my_notes/enums/noteTypeEnums.dart';
+import 'package:my_notes/widgets/addNotePagesAppBar.dart';
 
 import '../../Databases/NotesDatabase.dart';
 import '../../Models/Book.dart';
 import '../../Models/Note.dart';
+import '../../NoteSheets/manuel_entry_sheet.dart';
 import '../../Utils/PaddingUtility.dart';
 import '../bookPage/books_page.dart';
 import 'notes_list.dart';
@@ -37,8 +46,13 @@ class _NotesPageState extends State<NotesPage> {
     super.initState();
     //isLoading = true;
     isLoading = false;
+  }
 
-    //refreshNotes();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    print("notespage dispose");
+    super.dispose();
   }
 
   @override
@@ -96,7 +110,6 @@ class _NotesPageState extends State<NotesPage> {
                             child: isLoading == true
                                 ? const Center(child: Text('NOTES ARE LOADING'))
                                 : NotesList(
-                                    //notes: notes,
                                     notes: [],
                                     book: widget.book!,
                                   ),
@@ -105,24 +118,6 @@ class _NotesPageState extends State<NotesPage> {
                       ],
                     ),
                   ),
-                  //Expanded(flex: 1, child: Container())
-                  /*Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(width: 4),
-                            borderRadius: BorderRadius.circular(50)),
-                        child: IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    //builder: (context) => AddNotePage(widget.bookId)));
-                                    builder: (context) =>
-                                        AddNoteByPage(widget.bookId)));
-                          },
-                        ),
-                      ),*/
                 ],
               ),
             ),
@@ -133,12 +128,18 @@ class _NotesPageState extends State<NotesPage> {
             children: [
               SpeedDialChild(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddNotePage(
-                                  book: widget.book,
-                                )));
+                    showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 8 / 10,
+                              width: MediaQuery.of(context).size.width,
+                              child: const ManuelEntrySheet(
+                                noteAction: NoteAction.noteAdd,
+                              ));
+                        });
                   },
                   child: const Icon(
                     (Icons.note),
@@ -146,40 +147,91 @@ class _NotesPageState extends State<NotesPage> {
                   label: "Manual Entry"),
               SpeedDialChild(
                   onTap: () {
-                    Navigator.push(
+                    /*Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ScanTextPage(widget.book)));
+                            builder: (context) => ScanTextPage(widget.book)));*/
+                    showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 8 / 10,
+                              child: const AddImagePage());
+                        });
                   },
                   child: const Icon(Icons.insert_photo),
                   label: "Record by Photo"),
               SpeedDialChild(
                   onTap: () {
-                    Navigator.push(
+                    /* Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ScanTextPage(widget.book)));*/
+                    showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return SizedBox(
+                            height: MediaQuery.of(context).size.height * 8 / 10,
+                            child: ImageToTextSheet(widget.book),
+                          );
+                        });
+                  },
+                  child: const Icon(Icons.insert_photo),
+                  label: "Photo to Text"),
+              SpeedDialChild(
+                  onTap: () {
+                    /*Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                SpeechToTextScreen(book: widget.book)));
+                                SpeechToTextScreen(book: widget.book)));*/
+                    showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return SizedBox(
+                            height: MediaQuery.of(context).size.height * 8 / 10,
+                            child: SpeechToTextSheet(book: widget.book),
+                          );
+                        });
                   },
                   child: const Icon(Icons.mic),
                   label: "Record Text by Voice"),
               SpeedDialChild(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AddSpeechPage()));
+                    buildRecordVoiceBottomSheet(context);
                   },
                   child: const Icon(Icons.mic),
                   label: "Record Voice")
             ],
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-          bottomNavigationBar: BottomNavigationBar(items: const [
-            BottomNavigationBarItem(icon: Icon(null), label: ''),
-            BottomNavigationBarItem(icon: Icon(null), label: '')
-          ],elevation: 10,backgroundColor: ColorsUtility.appBarBackgroundColor,),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          bottomNavigationBar: BottomNavigationBar(
+            items: const [
+              BottomNavigationBarItem(icon: Icon(null), label: ''),
+              BottomNavigationBarItem(icon: Icon(null), label: '')
+            ],
+            elevation: 10,
+            backgroundColor: ColorsUtility.appBarBackgroundColor,
+          ),
         ));
+  }
+
+  void buildRecordVoiceBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return SizedBox(
+              height: MediaQuery.of(context).size.height * 8 / 10,
+              child: const AddSpeechPage(
+                noteAction: NoteAction.noteAdd,
+              ));
+        });
   }
 
   AppBar buildAppBar() {
@@ -198,22 +250,47 @@ class _NotesPageState extends State<NotesPage> {
           Get.back();
         },
       ),
+      actions: [
+        IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    backgroundColor: ColorsUtility.scaffoldBackgroundColor,
+                    title: Text(
+                      'Confirm Delete',
+                      style: TextStyleUtility.textStyleBookInfoDialog,
+                    ),
+                    content: Text('Are you sure you want to delete this book?',
+                        style: TextStyleUtility.textStyleBookInfoDialog),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text('Cancel',
+                            style: TextStyleUtility.textStyleBookInfoDialog),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text('Delete',
+                            style: TextStyleUtility.dangerTextStyle),
+                      ),
+                    ],
+                  );
+                },
+              ).then((confirmed) async {
+                if (confirmed != null && confirmed) {
+                  // Code to delete the document goes here
+                  await Get.find<BookController>().deleteBook(widget.book);
+                  Get.off(const BooksPage());
+                }
+              });
+            },
+            icon: Icon(
+              Icons.delete,
+              color: ColorsUtility.redColor,
+            ))
+      ],
     );
   }
-
-/*Future refreshNotes() async {
-    //NotesDatabase.instance.close();
-    //NotesDatabase.instance.deleteDB();
-    print("listing notes:");
-
-    notes = await NotesDatabase.instance.readBooksNotes(widget.bookId);
-
-    for (int i = 0; i < notes.length; i++) {
-      print(
-          'NOTE ID ${notes[i].noteId}, BOOK ID ${notes[i].bookId}, NOTE TITLE${notes[i].noteTitle}, DATE ADDED ${notes[i].dateAdded}');
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }*/
 }

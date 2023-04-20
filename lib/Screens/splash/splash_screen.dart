@@ -1,8 +1,7 @@
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/Screens/auth/signup_screen.dart';
 import 'package:get/get.dart';
+import 'package:my_notes/Screens/no_connection_page.dart';
 import 'package:my_notes/constants.dart';
 
 import '../bookPage/books_page.dart';
@@ -27,7 +26,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller.forward();
 
@@ -37,7 +35,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       }else{
         Get.offAll(() => const BooksPage());
         //Get.offAll(() => SignUpScreen());
-
       }
       //Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) =>  SignUpScreen())));
     });
@@ -45,7 +42,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _controller?.dispose();
     super.dispose();
   }

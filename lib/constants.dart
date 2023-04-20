@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:my_notes/controllers/connectivity_controller.dart';
 
 import 'controllers/auth_controller.dart';
 
@@ -16,3 +17,4 @@ var firestore = FirebaseFirestore.instance;
 
 //CONTROLLERS
 var authController = AuthController.instance;
+var connectivityController = ConnectivityController.instance;

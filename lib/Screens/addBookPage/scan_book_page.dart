@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:my_notes/Databases/NotesDatabase.dart';
 import 'package:my_notes/Screens/bookPage/books_page.dart';
+import 'package:my_notes/Utils/ColorsUtility.dart';
 import 'package:my_notes/constants.dart';
 import 'package:my_notes/controllers/book_controller.dart';
 import '../../Secrets/api_keys.dart';
@@ -36,12 +37,17 @@ class _ScanBookPageState extends State<ScanBookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xfffaf0e6),
+        leading: IconButton(
+          icon: Icon(Icons.chevron_left, color: ColorsUtility.appBarIconColor,),
+          onPressed: (){
+            Get.back();
+          },
+        ),
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
         title: const Text(
-          "Scan the Barcode",
+          "Scan ISBN Barcode",
           style: TextStyle(color: Colors.black),
         ),
         actions: [
@@ -51,14 +57,14 @@ class _ScanBookPageState extends State<ScanBookPage> {
               builder: (context, state, child) {
                 switch (state as TorchState) {
                   case TorchState.off:
-                    return const Icon(
+                    return Icon(
                       Icons.flash_off,
-                      color: Colors.grey,
+                      color: ColorsUtility.hintTextColor,
                     );
                   case TorchState.on:
-                    return const Icon(
+                    return Icon(
                       Icons.flash_on,
-                      color: Colors.black,
+                      color: ColorsUtility.appBarIconColor,
                     );
                 }
               },
@@ -184,7 +190,7 @@ class _FoundCodeScreenState extends State<FoundCodeScreen> {
             widget.screenClosed();
             Navigator.pop(context);
           },
-          icon: Icon(Icons.arrow_back_outlined),
+          icon: const Icon(Icons.chevron_left),
         ),
       ),
       body: Center(

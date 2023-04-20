@@ -24,15 +24,17 @@ class _GenderPickerState extends State<GenderPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        DropdownButton(
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+      Expanded(
+        child: DropdownButton(
           // Initial Value
           value: dropdownvalue,
           dropdownColor: backgroundColor,
-
+          isExpanded: true,
           // Down Arrow Icon
           icon: const Icon(
             Icons.keyboard_arrow_down,
@@ -58,7 +60,9 @@ class _GenderPickerState extends State<GenderPicker> {
             });
           },
         ),
-      ],
-    ));
+      ),
+        ],
+      ),
+    );
   }
 }

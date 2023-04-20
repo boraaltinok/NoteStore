@@ -1,27 +1,43 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:my_notes/Utils/ColorsUtility.dart';
+import 'package:my_notes/Utils/SnackBarUtility.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
 import '../Models/Book.dart';
+import '../Models/Note.dart';
 import '../constants.dart';
 import 'dart:io';
 
 class BookController extends GetxController {
   final Rx<List<Book>> _bookList = Rx<List<Book>>([]);
 
+  late TextEditingController _bookTitleController;
+  late TextEditingController _bookAuthorController;
+
+  TextEditingController get bookTitleController => _bookTitleController;
+
+  TextEditingController get bookAuthorController => _bookAuthorController;
+
   Rx<bool> _bookLongPressed = false.obs;
 
   List<Book> get bookList => _bookList.value;
+
   bool get bookLongPressed => _bookLongPressed.value;
+
   @override
   void onInit() {
     super.onInit();
     _bookList.bindStream(firestore
-        .collection('users').doc(authController.user.uid).collection('books')
+        .collection('users')
+        .doc(authController.user.uid)
+        .collection('books')
         .snapshots()
         .map((QuerySnapshot query) {
       List<Book> retVal = [];
@@ -32,7 +48,17 @@ class BookController extends GetxController {
     }));
   }
 
-  void onBookLongPressed(){
+  initTextEditingControllers() {
+    _bookAuthorController = TextEditingController();
+    _bookTitleController = TextEditingController();
+  }
+
+  disposeTextEditingControllers() {
+    _bookAuthorController.dispose();
+    _bookTitleController.dispose();
+  }
+
+  void onBookLongPressed() {
     _bookLongPressed = (!_bookLongPressed.value).obs;
     print("here value is ${_bookLongPressed.value}");
   }
@@ -65,6 +91,16 @@ class BookController extends GetxController {
       required String bookAuthor,
       String bookCoverPath = ""}) async {
     //isLoading.value = true;
+    if (bookName == "" || bookAuthor == "") {
+      SnackBarUtility.showCustomSnackbar(
+          title: "Can't Add the Book",
+          message: "Please fill all the fields",
+          icon: Icon(
+            Icons.error_outline_outlined,
+            color: ColorsUtility.appBarIconColor,
+          ));
+      return;
+    }
     try {
       String uid = firebaseAuth.currentUser!.uid; //find current users uid
 
@@ -75,8 +111,9 @@ class BookController extends GetxController {
       var allDocs = await firestore.collection('books').get();
       int len = allDocs.docs.length;
       //String videoUrl = await _uploadVideoToStorage("Video $len", videoPath);
+      String bookCoverFirebaseUrl = "";
       if (bookCoverPath != "") {
-        String bookCoverUrl =
+        bookCoverFirebaseUrl =
             await _uploadBookCoverToStorage(randomId, bookCoverPath);
       }
 
@@ -87,11 +124,16 @@ class BookController extends GetxController {
           dateAdded: DateTime.now(),
           bookName: bookName,
           bookAuthor: bookAuthor,
-          bookCover: bookCoverPath,
+          bookCover: bookCoverFirebaseUrl,
           bookId: randomId);
 
       //await firestore.collection('books').doc('Book $len').set(book.toJson());
-      await firestore.collection('users').doc(authController.user.uid).collection('books').doc(book.bookId).set(book.toJson());
+      await firestore
+          .collection('users')
+          .doc(authController.user.uid)
+          .collection('books')
+          .doc(book.bookId)
+          .set(book.toJson());
 
       /*Video video = Video(
           username: (userDoc.data()! as Map<String, dynamic>)['name'],
@@ -118,12 +160,70 @@ class BookController extends GetxController {
     //isLoading.value = false;
   }
 
-  deleteBook(String bookId) async{
+  deleteBook(Book book) async {
+    final DocumentSnapshot documentSnapshot = await firestore
+        .collection('users')
+        .doc(authController.user.uid)
+        .collection('books')
+        .doc(book.bookId)
+        .get();
+    Book toBeDeletedBook = Book.fromSnap(documentSnapshot);
+    try{
+      await firebaseStorage
+          .refFromURL(toBeDeletedBook.bookCover ?? "")//deleting the book cover
+          .delete();
+    }catch(e){
+      print(e);
+    }
+    final QuerySnapshot noteSnapshots = await firestore
+        .collection('users')
+        .doc(authController.user.uid)
+        .collection('books')
+        .doc(book.bookId)
+        .collection('notes')
+        .get();
+
+    for (final DocumentSnapshot noteSnapshot in noteSnapshots.docs) {
+      Note toBeDeletedNote = Note.fromSnap(noteSnapshot);
+      if (toBeDeletedNote.imagePath != null &&
+          toBeDeletedNote.imagePath != "") {
+        try {
+          await firebaseStorage
+              .refFromURL(toBeDeletedNote.imagePath ?? "")//deleting the image file from storage
+              .delete();
+        } catch (e) {
+          print(e);
+        }
+      }
+      if (toBeDeletedNote.speechPath != null &&
+          toBeDeletedNote.speechPath != "") {
+        try {
+          await firebaseStorage
+              .refFromURL(toBeDeletedNote.speechPath ?? "")//deleting the speech file from storage
+              .delete();
+        } catch (e) {
+          print(e);
+        }
+      }
+    }
+    final CollectionReference collectionRef = firestore
+        .collection('users')
+        .doc(authController.user.uid)
+        .collection('books')
+        .doc(book.bookId)
+        .collection('notes');
+
+    await collectionRef.get().then((querySnapshot) {
+      for (var note in querySnapshot.docs) {
+        note.reference.delete();
+      }
+    });
+
     await firestore
         .collection('users')
         .doc(authController.user.uid)
         .collection('books')
-        .doc(bookId)
+        .doc(book.bookId)
         .delete();
   }
 }

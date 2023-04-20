@@ -1,19 +1,42 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 import 'package:my_notes/Screens/bookPage/books_page.dart';
+import 'package:my_notes/Utils/PaddingUtility.dart';
 import 'package:my_notes/constants.dart';
+import 'package:my_notes/widgets/addNotePagesAppBar.dart';
 
 import '../../Databases/NotesDatabase.dart';
 import '../../Models/Book.dart';
 import 'package:get/get.dart';
 
+import '../../Utils/ColorsUtility.dart';
 import '../../controllers/book_controller.dart';
+import '../../widgets/addBookPageAppBar.dart';
 
-class AddBookPage extends StatelessWidget {
+class AddBookPage extends StatefulWidget {
   AddBookPage({Key? key}) : super(key: key);
-  final formKey = GlobalKey<FormState>();
 
+  @override
+  State<AddBookPage> createState() => _AddBookPageState();
+}
+
+class _AddBookPageState extends State<AddBookPage> {
+  final formKey = GlobalKey<FormState>();
+  BookController bookController = Get.put(BookController());
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    bookController.initTextEditingControllers();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    bookController.disposeTextEditingControllers();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,195 +50,195 @@ class AddBookPage extends StatelessWidget {
     ScrollController(initialScrollOffset: 0);
 
     return Scaffold(
-      backgroundColor: Color(0xffffffff),
       resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.only(top: 30),
-          //margin: EdgeInsets.fromLTRB(40, 40, 40, 80),
-          decoration: const BoxDecoration(color: Color(0xffffffff)),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+      appBar: AddBookPageAppBar(),
+      body: Padding(
+        padding: PaddingUtility.scaffoldBodyGeneralPadding,
+        child: Column(
+          children: [
+            Container(
+              height: kToolbarHeight,
+              child: TextField(
+                controller: bookController.bookTitleController,
+                keyboardType: TextInputType.multiline,
+                //maxLines: 10,
+                maxLines: 1,
+                decoration: InputDecoration(
+                    labelText: "Book Title",
+                    labelStyle: TextStyle(color: ColorsUtility.hintTextColor),
+                    border: InputBorder.none),
+                style: TextStyle(color: ColorsUtility.blackText),
+              ),
+            ),
+            Container(
+              height: kToolbarHeight,
+              child: TextField(
+                controller: bookController.bookAuthorController,
+                keyboardType: TextInputType.multiline,
+                //maxLines: 10,
+                maxLines: 1,
+                decoration: InputDecoration(
+                    labelText: "Author Name",
+                    labelStyle: TextStyle(color: ColorsUtility.hintTextColor),
+                    border: InputBorder.none),
+                style: TextStyle(color: ColorsUtility.blackText),
+              ),
+            ),
+          ],
+        )/*Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const BooksPage()));
+                        const Text(
+                          'Book Name',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        const SizedBox(height: 5.0),
+                        TextFormField(
+                          controller: bookNameEditingController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please input book name';
+                            }
+                            return null;
                           },
-                          icon: const Icon(Icons.arrow_circle_left),
-                          iconSize: 25,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(75)
+                          ],
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            hintText: "enter book name",
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide:
+                              const BorderSide(color: Colors.grey),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide:
+                              const BorderSide(color: Colors.grey),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: Colors.red),
+                            ),
+                          ),
+                          minLines: 1,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 2,
                         ),
                       ],
                     ),
-                  ),
-                  const Expanded(
-                      flex: 1,
-                      child: Image(
-                          image: AssetImage("assets/logo3.png")))
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Book Name',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14.0,
-                            ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Book Author',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
                           ),
-                          const SizedBox(height: 5.0),
-                          TextFormField(
-                            controller: bookNameEditingController,
+                        ),
+                        const SizedBox(height: 5.0),
+                        Scrollbar(
+                          controller: _scrollController,
+                          thumbVisibility: true,
+                          thickness: 10,
+                          radius: Radius.circular(15),
+                          child: TextFormField(
+                            controller: bookAuthorEditingController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please input book name';
+                                return 'Please input book author';
                               }
                               return null;
                             },
                             inputFormatters: [
-                              LengthLimitingTextInputFormatter(75)
+                              LengthLimitingTextInputFormatter(70)
                             ],
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 20),
-                              hintText: "enter book name",
+                              hintText: "enter book author",
+                              fillColor: Colors.white,
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide:
-                                const BorderSide(color: Colors.grey),
+                                borderSide: BorderSide(color: Colors.grey),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide:
-                                const BorderSide(color: Colors.grey),
+                                borderSide: BorderSide(color: Colors.grey),
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: const BorderSide(color: Colors.red),
+                                borderSide:
+                                const BorderSide(color: Colors.red),
                               ),
                             ),
                             minLines: 1,
                             keyboardType: TextInputType.multiline,
                             maxLines: 2,
                           ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Book Author',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14.0,
-                            ),
-                          ),
-                          const SizedBox(height: 5.0),
-                          Scrollbar(
-                            controller: _scrollController,
-                            thumbVisibility: true,
-                            thickness: 10,
-                            radius: Radius.circular(15),
-                            child: TextFormField(
-                              controller: bookAuthorEditingController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please input book author';
-                                }
-                                return null;
-                              },
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(70)
-                              ],
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                hintText: "enter book author",
-                                fillColor: Colors.white,
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide:
-                                  const BorderSide(color: Colors.red),
-                                ),
-                              ),
-                              minLines: 1,
-                              keyboardType: TextInputType.multiline,
-                              maxLines: 2,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Center(
-                        child: FloatingActionButton.extended(
-                          onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              const snackBar = SnackBar(
-                                  content: Text(
-                                      'Book Have been Successfully Added'));
-
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                              bookController.uploadBook(
-                                  bookName: bookNameEditingController.text,
-                                  bookAuthor: bookAuthorEditingController.text);
-                              /*addBook(bookNameEditingController.text,
-                                  bookAuthorEditingController.text);*/
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const BooksPage()));
-                            }
-                          },
-                          label: const Text(
-                            "ADD THE BOOK",
-                          ),
-                          backgroundColor: borderColor,
                         ),
-                      )
-                    ],
-                  ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    Center(
+                      child: FloatingActionButton.extended(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            const snackBar = SnackBar(
+                                content: Text(
+                                    'Book Have been Successfully Added'));
+
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                            bookController.uploadBook(
+                                bookName: bookNameEditingController.text,
+                                bookAuthor: bookAuthorEditingController.text);
+                            /*addBook(bookNameEditingController.text,
+                                bookAuthorEditingController.text);*/
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const BooksPage()));
+                          }
+                        },
+                        label: const Text(
+                          "ADD THE BOOK",
+                        ),
+                        backgroundColor: borderColor,
+                      ),
+                    )
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+          ],
+        ),*/
       ),
     );
   }

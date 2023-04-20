@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:my_notes/Screens/splash/splash_screen.dart';
-import 'package:my_notes/models/user.dart' as userModel;
+import 'package:my_notes/Models/user.dart' as userModel;
 import 'package:image_picker/image_picker.dart';
 import 'package:my_notes/Screens/bookPage/books_page.dart';
 
@@ -17,11 +18,8 @@ class AuthController extends GetxController {
 
   late Rx<File?> _pickedImage = null
       .obs; //this is observable keeps track if the image variable is changed or not
-
   late Rx<User?> _user; // this is not model user this is FİREBASE AUTH USER
-  Rx<String> profilePhotoPath =
-      "https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png"
-          .obs;
+  Rx<String> profilePhotoPath = "".obs;
 
   File? get profilePhoto => _pickedImage.value;
 
@@ -40,10 +38,10 @@ class AuthController extends GetxController {
   _setInitialScreen(User? user) {
     if (user == null) {
       //Get.offAll(() => LoginScreen());
-      Get.offAll(() => SplashScreen());
+      Get.offAll(() => const SplashScreen());
     } else {
       print('UID IS : ${user.uid}');
-      Get.offAll(() => SplashScreen());
+      Get.offAll(() => const SplashScreen());
     }
   }
 
@@ -119,6 +117,27 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Error Logging in to Account', e.toString());
+    }
+  }
+
+  Future<userModel.User?> getUser({required userId}) async {
+    try {
+      DocumentSnapshot doc =
+          await firestore.collection('users').doc(userId).get();
+
+      userModel.User user = userModel.User.fromSnap(doc);
+
+      return user;
+    } catch (e) {
+      Get.snackbar('Error Retrieving', e.toString());
+      return null;
+      /*return  userModel.User(
+          name: "",
+          uid: "",
+          email: "",
+          profilePhoto: "",
+          country: "",
+          gender: "");*/
     }
   }
 

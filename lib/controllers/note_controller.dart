@@ -1,6 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:my_notes/Utils/ColorsUtility.dart';
+import 'package:my_notes/Utils/SnackBarUtility.dart';
+import 'package:my_notes/enums/noteActionEnums.dart';
+import 'package:my_notes/enums/noteTypeEnums.dart';
 import 'package:uuid/uuid.dart';
 
 import '../Models/Note.dart';
@@ -16,6 +22,14 @@ class NoteController extends GetxController {
   final Rx<String> _imagePath = Rx<String>("");
   final Rx<String> _speechPath = Rx<String>("");
 
+  late TextEditingController _noteTitleController;
+  late TextEditingController _noteTextEditingController;
+
+  TextEditingController get noteTitleController => _noteTitleController;
+
+  TextEditingController get noteTextEditingController =>
+      _noteTextEditingController;
+
   List<Note> get noteList => _noteList.value;
 
   String get bookId => _bookId.value;
@@ -24,10 +38,38 @@ class NoteController extends GetxController {
 
   String get speechPath => _speechPath.value;
 
+  late Note currentNote;
+
   @override
   void onInit() {
     super.onInit();
     print("bookID value is ${_bookId.value}");
+  }
+
+  initTextEditingControllers({required NoteAction noteAction, Note? note}) {
+    if (noteAction == NoteAction.noteAdd) {
+      _noteTitleController = TextEditingController();
+      _noteTextEditingController = TextEditingController();
+    } else if (noteAction == NoteAction.noteEdit) {
+      _noteTitleController =
+          TextEditingController(text: note?.noteTitle.toString());
+      _noteTextEditingController =
+          TextEditingController(text: note?.noteText.toString());
+    }
+  }
+
+  updateCurrentNote(Note note) {
+    currentNote = note;
+  }
+
+  resetTextEditingControllers() {
+    _noteTitleController.text = "";
+    _noteTextEditingController.text = "";
+  }
+
+  disposeTextEditingControllers() {
+    _noteTitleController.dispose();
+    _noteTextEditingController.dispose();
   }
 
   updateBookId(String bookId) {
@@ -45,6 +87,7 @@ class NoteController extends GetxController {
       for (var element in query.docs) {
         retVal.add(Note.fromSnap(element));
       }
+      retVal.sort((a, b) => b.dateAdded.compareTo(a.dateAdded));
       return retVal;
     }));
   }
@@ -58,13 +101,13 @@ class NoteController extends GetxController {
   }
 
   uploadNote(
-      {required String bookId,
-      noteTitle,
+      {noteTitle = '',
       notePage,
-      required String noteText,
+      String noteText = '',
       String imagePath = '',
       String speechPath = '',
-      required String noteType}) async {
+      int speechDuration = 0,
+      required NoteTypeEnum noteTypeEnum}) async {
     try {
       String uid = firebaseAuth.currentUser!.uid; //find current users uid
       String randomId = const Uuid().v4();
@@ -90,11 +133,13 @@ class NoteController extends GetxController {
           noteId: randomId,
           bookId: bookId,
           addedBy: '',
-          noteType: noteType,
-          noteText: noteText,
+          noteType: noteTypeEnum.noteTypeEnumToString(),
+          noteText: noteTextEditingController.text,
+          noteTitle: noteTitleController.text,
           imagePath: imageURL,
           speechPath: speechURL,
-          dateAdded: DateTime.now());
+          dateAdded: DateTime.now(),
+          speechDuration: speechDuration);
 
       await firestore
           .collection('users')
@@ -104,10 +149,6 @@ class NoteController extends GetxController {
           .collection('notes')
           .doc(randomId)
           .set(note.toJson());
-      /*if (speechPath != "") {
-        String bookCoverUrl =
-        await _uploadBookCoverToStorage(randomId, bookCoverPath);
-      }*/
       return speechURL == "" ? imageURL : speechURL;
     } catch (e) {
       Get.snackbar('Error Uploading Note', e.toString());
@@ -126,7 +167,6 @@ class NoteController extends GetxController {
 
   Future<String> _uploadSpeechNoteToStorage(
       String id, String speechPath) async {
-    //print("inside uploadSpeechNoteToStorage");
     Reference ref = firebaseStorage.ref().child('speechNotes').child(id);
 
     UploadTask uploadTask = ref.putFile(
@@ -147,5 +187,54 @@ class NoteController extends GetxController {
     file.writeAsBytesSync(response.bodyBytes);
 
     return file;
+  }
+
+  Future editNote({String? noteTitle, String? noteText}) async {
+    String? newNoteTitle = currentNote.noteTitle;
+    String? newNoteText = currentNote.noteText;
+
+    if (noteTitle != currentNote.noteTitle) {
+      newNoteTitle = noteTitle;
+    }
+    if (noteText != currentNote.noteText) {
+      newNoteText = noteText;
+    }
+    if (noteTitle != currentNote.noteTitle ||
+        noteText != currentNote.noteText) {
+      print("currentNote ıd ${currentNote.noteId}");
+      await firestore
+          .collection('users')
+          .doc(authController.user.uid)
+          .collection('books')
+          .doc(bookId)
+          .collection('notes')
+          .doc(currentNote.noteId)
+          .update({
+        NoteFields.noteTitle: newNoteTitle,
+        NoteFields.noteText: newNoteText
+      });
+    }
+  }
+
+  Future deleteNote(
+      {required Note note}) async {
+    if(note.speechPath != ""){
+      await firebaseStorage.refFromURL(note.speechPath?? "").delete();
+    }
+    if(note.imagePath != ""){
+      await firebaseStorage.refFromURL(note.imagePath?? "").delete();
+
+    }
+    await firestore
+        .collection('users')
+        .doc(authController.user.uid)
+        .collection('books')
+        .doc(note.bookId)
+        .collection('notes')
+        .doc(note.noteId)
+        .delete();
+
+    //Get.snackbar("", "Note deleted successfully", );
+    SnackBarUtility.showCustomSnackbar(title: 'NoteStore Notification', message: 'Note deleted successfully',icon: Icon(Icons.check_circle_outline, color: ColorsUtility.appBarIconColor,));
   }
 }

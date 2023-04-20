@@ -5,8 +5,13 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
+import 'package:my_notes/Utils/ColorsUtility.dart';
+import 'package:my_notes/Utils/PaddingUtility.dart';
 import 'package:my_notes/controllers/note_controller.dart';
+import 'package:my_notes/enums/noteTypeEnums.dart';
+import 'package:my_notes/widgets/addNotePagesAppBar.dart';
 import '../../Models/Book.dart';
+import '../../enums/noteActionEnums.dart';
 import 'add_note_page.dart';
 
 class ScanTextPage extends StatefulWidget {
@@ -28,16 +33,35 @@ class _ScanTextPageState extends State<ScanTextPage> {
 
   NoteController noteController = Get.put(NoteController());
 
+  @override
+  void initState() {
+    super.initState();
+
+    noteController.initTextEditingControllers(noteAction: NoteAction.noteAdd);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xfffaf0e6),
-        centerTitle: true,
-        title: const Text("Scan Your Text", style: TextStyle(color: Colors.black),),
-        iconTheme: IconThemeData(
-          color: Colors.black, //change your color here
+      appBar: AddNoteSheetsAppBar(
+        noteTitleController: noteController.noteTitleController,
+        noteTypeEnum: NoteTypeEnum.imageToTextNote,
+        noteAction: NoteAction.noteAdd,
+      ),
+      /*AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Scan Your Text",
+          style: TextStyle(color: ColorsUtility.appBarTitleColor),
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.chevron_left,
+            color: ColorsUtility.appBarIconColor,
+          ),
         ),
         actions: [
           IconButton(
@@ -51,139 +75,142 @@ class _ScanTextPageState extends State<ScanTextPage> {
                             scannedText: scannedText,
                           )));
             },
-            icon: const Icon(Icons.check_circle_outline),
+            icon: Icon(
+              Icons.check_circle_outline,
+              color: ColorsUtility.appBarIconColor,
+            ),
           )
         ],
-      ),
-      body: Center(
-          child: SingleChildScrollView(
-        child: Container(
-            //decoration: BoxDecoration(color: Colors.blueAccent),
-            margin: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (textScanning) const CircularProgressIndicator(),
-                if (!textScanning && imageFile == null)
-                  Container(
-                    width: 300,
-                    height: 300,
-                    color: Colors.grey[300]!,
-                  ),
-                if (_croppedFile != null)
-                  Image.file(File(_croppedFile!.path))
-                else if (imageFile != null)
-                  Image.file(File(imageFile!.path)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                        padding: const EdgeInsets.only(top: 10),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
-                            onPrimary: Colors.grey,
-                            shadowColor: Colors.grey[400],
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0)),
-                          ),
-                          onPressed: () {
-                            getImage(ImageSource.gallery);
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 5),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.image,
-                                  size: 30,
-                                ),
-                                Text(
-                                  "Gallery",
-                                  style: TextStyle(
-                                      fontSize: 13, color: Colors.grey[600]),
-                                )
-                              ],
-                            ),
-                          ),
-                        )),
-                    Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                        padding: const EdgeInsets.only(top: 10),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
-                            onPrimary: Colors.grey,
-                            shadowColor: Colors.grey[400],
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0)),
-                          ),
-                          onPressed: () {
-                            getImage(ImageSource.camera);
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 5),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.camera_alt,
-                                  size: 30,
-                                ),
-                                Text(
-                                  "Camera",
-                                  style: TextStyle(
-                                      fontSize: 13, color: Colors.grey[600]),
-                                )
-                              ],
-                            ),
-                          ),
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 32.0),
-                      child: FloatingActionButton(
-                        onPressed: () {
-                          _cropImage();
-                        },
-                        backgroundColor: const Color(0xfffaf0e6),
-                        foregroundColor: Colors.black,
-                        tooltip: 'Crop',
-                        child: const Icon(Icons.crop),
-                      ),
-                    )
-                  ],
-                ),
-                /*IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            //builder: (context) => AddNotePage(widget.bookId)));
-                            builder: (context) => AddNotePage(
-                                  bookId: widget.bookId,
-                                  scannedText: scannedText,
-                                )));
-                  },
-                  icon: const Icon(Icons.check),
-                ),*/
-                const SizedBox(
-                  height: 20,
-                ),
+      ),*/
+      body: Padding(
+        padding: PaddingUtility.scaffoldBodyGeneralPadding,
+        child: Center(
+            child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (textScanning) const CircularProgressIndicator(),
+              if (!textScanning && imageFile == null)
                 Container(
-                  child: Text(
-                    scannedText,
-                    style: TextStyle(fontSize: 15),
-                  ),
-                )
-              ],
-            )),
-      )),
+                  width: 300,
+                  height: 300,
+                  color: Colors.grey[300]!,
+                ),
+              if (_croppedFile != null)
+                Image.file(File(_croppedFile!.path))
+              else if (imageFile != null)
+                Image.file(File(imageFile!.path)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.only(top: 10),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          onPrimary: Colors.grey,
+                          shadowColor: Colors.grey[400],
+                          elevation: 10,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)),
+                        ),
+                        onPressed: () {
+                          getImage(ImageSource.gallery);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 5),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.image,
+                                size: 30,
+                              ),
+                              Text(
+                                "Gallery",
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.grey[600]),
+                              )
+                            ],
+                          ),
+                        ),
+                      )),
+                  Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.only(top: 10),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          onPrimary: Colors.grey,
+                          shadowColor: Colors.grey[400],
+                          elevation: 10,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)),
+                        ),
+                        onPressed: () {
+                          getImage(ImageSource.camera);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 5),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.camera_alt,
+                                size: 30,
+                              ),
+                              Text(
+                                "Camera",
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.grey[600]),
+                              )
+                            ],
+                          ),
+                        ),
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32.0),
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        _cropImage();
+                      },
+                      backgroundColor: const Color(0xfffaf0e6),
+                      foregroundColor: Colors.black,
+                      tooltip: 'Crop',
+                      child: const Icon(Icons.crop),
+                    ),
+                  )
+                ],
+              ),
+              /*IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          //builder: (context) => AddNotePage(widget.bookId)));
+                          builder: (context) => AddNotePage(
+                                bookId: widget.bookId,
+                                scannedText: scannedText,
+                              )));
+                },
+                icon: const Icon(Icons.check),
+              ),*/
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                child: Text(
+                  scannedText,
+                  style: TextStyle(fontSize: 15),
+                ),
+              )
+            ],
+          ),
+        )),
+      ),
     );
   }
 
@@ -220,11 +247,6 @@ class _ScanTextPageState extends State<ScanTextPage> {
     }
     textScanning = false;
     setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   Future<void> _cropImage() async {
