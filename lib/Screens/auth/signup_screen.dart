@@ -159,14 +159,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             icon: Icons.email,
                           ),
                         ),
-                        CountryPicker(
+                        /*CountryPicker(
                           onCountryChanged: (newCountry) {
                             country = newCountry;
                           },
-                        ),
-                        GenderPicker(onGenderChanged: (newGender) {
+                        ),*/
+                        /*GenderPicker(onGenderChanged: (newGender) {
                           gender = newGender;
-                        }),
+                        }),*/
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: TextInputField(
@@ -200,8 +200,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   _passwordController.text,
                                   _verifyPasswordController.text,
                                   authController.profilePhoto,
-                                  country.toString(),
-                                  gender.toString());
+                                  '',
+                                  '');
                             },
                             child: Center(
                                 child: Text(

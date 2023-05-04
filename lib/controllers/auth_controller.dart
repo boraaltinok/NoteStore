@@ -72,6 +72,7 @@ class AuthController extends GetxController {
     if (pickedImage != null) {
       SnackBarUtility.showCustomSnackbar(title: "Profile Picture", message: "Successfully selected profile picture", icon: Icon(Icons.check_circle_outline));
     }
+    print(_pickedImage.value?.path ?? "else");
     _pickedImage = Rx<File?>(File(pickedImage!.path));
     profilePhotoPath.value = pickedImage!.path;
     refresh();
@@ -84,10 +85,10 @@ class AuthController extends GetxController {
       if (username.isNotEmpty &&
           email.isNotEmpty &&
           password.isNotEmpty &&
-          verifyPassword.isNotEmpty &&
+          verifyPassword.isNotEmpty
           /*image != null &&*/
-          country.isNotEmpty &&
-          gender.isNotEmpty) {
+          /*country.isNotEmpty &&
+          gender.isNotEmpty*/) {
         //save our user to our auth and firebase database(firestore)
         if(password != verifyPassword){
           SnackBarUtility.showCustomSnackbar(title: 'Password Error', message: 'Passwords do not match', icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor,));

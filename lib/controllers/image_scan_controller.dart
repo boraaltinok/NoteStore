@@ -33,14 +33,17 @@ class ImageScanController extends GetxController {
       if (pickedImage != null) {
         _textScanning.value = true;
         print("heree ${_textScanning.value}");
+        print("picked image ${pickedImage.path}");
         _imageFile.value = pickedImage;
-          _croppedFile.value = null;
+          _croppedFile.value = CroppedFile("");
 
         getRecognisedText(pickedImage);
       }
     } catch (e) {
+      print("inside catch ${e}");
+
       _textScanning.value = false;
-      _imageFile.value = null;
+      _imageFile.value = XFile("");
       _scannedText.value = "Error occured while scanning $e";
     }
   }
@@ -92,7 +95,7 @@ class ImageScanController extends GetxController {
           ),
         ],
       );
-      if (croppedFile != null) {
+      if (croppedFile != null && _croppedFile.value != CroppedFile("") ) {
           _croppedFile.value = croppedFile;
 
         //noteController.setImagePath(croppedFile.path);

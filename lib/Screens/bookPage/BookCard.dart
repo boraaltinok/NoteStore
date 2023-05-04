@@ -28,6 +28,8 @@ class BookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     timeago.setLocaleMessages('tr', timeago.TrMessages());
     timeago.setLocaleMessages('en', timeago.EnMessages());
+    timeago.setLocaleMessages('ru', timeago.RuMessages());
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ClipRRect(
