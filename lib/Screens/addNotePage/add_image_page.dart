@@ -14,6 +14,9 @@ import 'package:my_notes/widgets/addNotePagesAppBar.dart';
 import '../../Models/Book.dart';
 import 'add_note_page.dart';
 
+import '../../lang/translation_keys.dart' as translation;
+import 'package:my_notes/extensions/string_extension.dart';
+
 class AddImagePage extends StatefulWidget {
   const AddImagePage({Key? key}) : super(key: key);
 
@@ -47,33 +50,43 @@ class _AddImagePageState extends State<AddImagePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("kal");
     return Scaffold(
       backgroundColor: ColorsUtility.scaffoldBlackThemeBackgroundColor,
       appBar: AddNoteSheetsAppBar(
         noteTitleController: Get.find<NoteController>().noteTitleController,
         noteTypeEnum: NoteTypeEnum.imageNote,
         noteAction: NoteAction.noteAdd,
-
       ),
       body: Padding(
         padding: PaddingUtility.scaffoldBodyGeneralPadding,
         child: Center(
             child: SingleChildScrollView(
-              padding: EdgeInsets.zero,
+          padding: EdgeInsets.zero,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (textScanning) const CircularProgressIndicator(),
               if (!textScanning && imageFile == null)
                 Container(
-                  width: MediaQuery.of(context).size.width * 6/10,
+                  width: MediaQuery.of(context).size.width * 6 / 10,
                   height: MediaQuery.of(context).size.height * 4 / 10,
                   color: Colors.grey[300]!,
                 ),
               if (_croppedFile != null)
-                SizedBox(width: MediaQuery.of(context).size.width * 6/10, height: MediaQuery.of(context).size.height * 4 / 10, child: FittedBox(fit: BoxFit.contain,child: Image.file(File(_croppedFile!.path))))
+                SizedBox(
+                    width: MediaQuery.of(context).size.width * 6 / 10,
+                    height: MediaQuery.of(context).size.height * 4 / 10,
+                    child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Image.file(File(_croppedFile!.path))))
               else if (imageFile != null)
-                SizedBox(width: MediaQuery.of(context).size.width * 6/10, height: MediaQuery.of(context).size.height * 4 / 10 ,child: FittedBox(fit: BoxFit.contain,child: Image.file(File(imageFile!.path)))),
+                SizedBox(
+                    width: MediaQuery.of(context).size.width * 6 / 10,
+                    height: MediaQuery.of(context).size.height * 4 / 10,
+                    child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Image.file(File(imageFile!.path)))),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -103,7 +116,7 @@ class _AddImagePageState extends State<AddImagePage> {
                                 size: 30,
                               ),
                               Text(
-                                "Gallery",
+                                translation.gallery.locale,
                                 style: TextStyle(
                                     fontSize: 13, color: Colors.grey[600]),
                               )
@@ -132,12 +145,12 @@ class _AddImagePageState extends State<AddImagePage> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.camera_alt,
                                 size: 30,
                               ),
                               Text(
-                                "Camera",
+                                translation.camera.locale,
                                 style: TextStyle(
                                     fontSize: 13, color: Colors.grey[600]),
                               )
@@ -211,13 +224,13 @@ class _AddImagePageState extends State<AddImagePage> {
         compressQuality: 100,
         uiSettings: [
           AndroidUiSettings(
-              toolbarTitle: 'Cropper',
+              toolbarTitle: translation.cropper.locale,
               toolbarColor: Color(0xfffaf0e6),
               toolbarWidgetColor: Colors.black,
               initAspectRatio: CropAspectRatioPreset.original,
               lockAspectRatio: false),
           IOSUiSettings(
-            title: 'Cropper',
+            title: translation.cropper.locale,
           ),
           WebUiSettings(
             context: context,

@@ -163,12 +163,12 @@ class _NoteCardState extends State<NoteCard> {
                     Expanded(
                       flex: 1,
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 5, left: 5),
+                        padding: PaddingUtility.paddingTextLeftRight,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             timeago.format(widget.note.dateAdded),
-                            style: TextStyleUtility.textStyleDate.copyWith(color: Colors.grey),
+                            style: TextStyleUtility.textStyleDate.copyWith(color: ColorsUtility.hintTextColor),
                           ),
                         ),
                       ),

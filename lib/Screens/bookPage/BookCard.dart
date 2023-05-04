@@ -6,11 +6,14 @@ import 'package:intl/intl.dart';
 import 'package:my_notes/Utils/BorderUtility.dart';
 import 'package:my_notes/Utils/ColorsUtility.dart';
 import 'package:my_notes/Utils/Dimensions.dart';
+import 'package:my_notes/Utils/LocalizationUtility.dart';
 import 'package:my_notes/Utils/PaddingUtility.dart';
 import 'package:my_notes/Utils/TextStyleUtility.dart';
 import 'package:my_notes/constants.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import '../../lang/translation_keys.dart' as translation;
+import 'package:my_notes/extensions/string_extension.dart';
 
 import '../../controllers/book_controller.dart';
 
@@ -23,6 +26,8 @@ class BookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    timeago.setLocaleMessages('tr', timeago.TrMessages());
+    timeago.setLocaleMessages('en', timeago.EnMessages());
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ClipRRect(
@@ -106,19 +111,28 @@ class BookCard extends StatelessWidget {
                     flex: 2,
                     child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text("Name: ${book.bookName.toString()}",
+                        child: Text(
+                            "${translation.name.locale}: ${book.bookName.toString()}",
                             style: TextStyleUtility.textStyleBookInfoDialog))),
                 Expanded(
                     child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Author: ${book.bookAuthor.toString()}",
+                          "${translation.author.locale}:  ${book.bookAuthor.toString()}",
                           style: TextStyleUtility.textStyleBookInfoDialog,
                         ))),
                 Expanded(
                     child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text("Added ${timeago.format(book.dateAdded)}",
+                        child: Text(
+                            Get.locale?.languageCode ==
+                                    LocalizationUtility.EN_LOCALE.languageCode
+                                ? "${translation.added.locale} ${timeago.format(book.dateAdded, locale: Get.locale?.languageCode ?? Get.fallbackLocale?.languageCode ?? 'en')}"
+                                : Get.locale?.languageCode ==
+                                        LocalizationUtility
+                                            .TR_LOCALE.languageCode
+                                    ? "${timeago.format(book.dateAdded, locale: Get.locale?.languageCode ?? Get.fallbackLocale?.languageCode ?? 'en')} ${translation.added.locale}"
+                                    : "Error",
                             style: TextStyleUtility.textStyleBookInfoDialog)))
               ],
             )),
@@ -136,13 +150,13 @@ class BookCard extends StatelessWidget {
     );
   }
 
-  CachedNetworkImage buildCoverImage() {
-    return CachedNetworkImage(
-      imageUrl: book.bookCover == ""
-          ? "https://firebasestorage.googleapis.com/v0/b/notestore-eea0e.appspot.com/o/bookCovers%2Fdefault_background.png?alt=media&token=67331278-4a75-402b-abd4-43deefbf4a58"
-          : book.bookCover!,
-      fit: BoxFit.cover,
-    );
+  CachedNetworkImage? buildCoverImage() {
+    return book.bookCover != ""
+        ? CachedNetworkImage(
+            imageUrl: book.bookCover!,
+            fit: BoxFit.cover,
+          )
+        : null;
     /*Image.network(
       book.bookCover == ""
           ? "https://firebasestorage.googleapis.com/v0/b/notestore-eea0e.appspot.com/o/bookCovers%2Fdefault_background.png?alt=media&token=67331278-4a75-402b-abd4-43deefbf4a58"

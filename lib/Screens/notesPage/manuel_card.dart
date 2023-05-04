@@ -1,19 +1,25 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/Utils/ColorsUtility.dart';
+import 'package:my_notes/Utils/LocalizationUtility.dart';
 import 'package:my_notes/Utils/PaddingUtility.dart';
 import 'package:my_notes/Utils/TextStyleUtility.dart';
 
 import '../../Models/Note.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
+import 'package:get/get.dart';
 class ManuelCard extends StatelessWidget {
   final Note note;
 
   const ManuelCard({Key? key, required this.note}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
+    timeago.setLocaleMessages('tr', timeago.TrMessages());
+    timeago.setLocaleMessages('en', timeago.EnMessages());
+    timeago.setLocaleMessages('ru', timeago.EnMessages());
+
+
     return Container(
       decoration: const BoxDecoration(
         color: Colors.transparent,
@@ -32,7 +38,7 @@ class ManuelCard extends StatelessWidget {
               flex: 10,
               child: Padding(
                 padding: PaddingUtility.paddingTextLeftRight,
-                child: Text(note.noteText, style: TextStyleUtility.textStyleBookInfoDialog,),
+                child: Text(note.noteText, style: TextStyleUtility.textStyleManuelNoteText,),
               ),
             ),
             Expanded(
@@ -42,7 +48,7 @@ class ManuelCard extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    timeago.format(note.dateAdded),
+                    timeago.format(note.dateAdded, locale: Get.locale?.languageCode ?? Get.fallbackLocale?.languageCode?? 'en'),
                     style: TextStyleUtility.textStyleDate.copyWith(color: Colors.grey),
                   ),
                 ),
@@ -74,18 +80,18 @@ class ManuelCard extends StatelessWidget {
               flex: 8,
               child: Padding(
                 padding: PaddingUtility.paddingTextLeftRight,
-                child: Text(note.noteText, style: TextStyleUtility.textStyleBookInfoDialog,),
+                child: Text(note.noteText, style: TextStyleUtility.textStyleManuelNoteText,),
               ),
             ),
             Expanded(
               flex: 1,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 5, left: 5),
+                padding: PaddingUtility.paddingTextLeftRight,
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    timeago.format(note.dateAdded),
-                    style: TextStyleUtility.textStyleDate.copyWith(color: Colors.grey),
+                    timeago.format(note.dateAdded, locale: Get.locale?.languageCode ?? Get.fallbackLocale?.languageCode?? 'en'),
+                    style: TextStyleUtility.textStyleDate.copyWith(color: ColorsUtility.hintTextColor),
                   ),
                 ),
               ),

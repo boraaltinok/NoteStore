@@ -1,21 +1,15 @@
 import 'dart:io';
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:my_notes/Screens/no_connection_page.dart';
 import 'package:my_notes/Screens/splash/blank_empty_screen.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:my_notes/Screens/bookPage/books_page.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:my_notes/Screens/splash/splash_screen.dart';
 import 'package:my_notes/Utils/ColorsUtility.dart';
 import 'package:my_notes/Utils/LocalizationUtility.dart';
-import 'package:my_notes/constants.dart';
 import 'package:my_notes/controllers/connectivity_controller.dart';
+import 'package:my_notes/controllers/language_controller.dart';
+import 'package:my_notes/lang/languages.dart';
 
 import 'controllers/auth_controller.dart';
 import 'package:get/get.dart';
@@ -23,19 +17,15 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await EasyLocalization.ensureInitialized();
 
-  var connectivityResult = await (Connectivity().checkConnectivity());
+  //var connectivityResult = await (Connectivity().checkConnectivity());
 
   await Firebase.initializeApp().then((value) {
     Get.put(AuthController());
+    Get.put(LanguageController());
     Get.put(ConnectivityController());
   });
-  runApp(EasyLocalization(
-      supportedLocales: const [LocalizationUtility.EN_LOCALE],
-      path: LocalizationUtility.LANG_PATH,
-      fallbackLocale: LocalizationUtility.EN_LOCALE,
-      child: const MyApp()));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -45,14 +35,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      locale: context.locale,
-      supportedLocales: context.supportedLocales,
-      //localizationsDelegates: context.localizationDelegates,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      translations: Languages(),
+      locale: Get.find<LanguageController>().selectedLanguageIndex == -1
+          ? Get.deviceLocale
+          : Get.find<LanguageController>()
+              .languages[Get.find<LanguageController>().selectedLanguageIndex],
+      fallbackLocale: LocalizationUtility.EN_LOCALE,
 
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(

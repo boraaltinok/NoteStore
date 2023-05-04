@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -20,10 +21,13 @@ import '../../Databases/NotesDatabase.dart';
 import '../../Models/Book.dart';
 import '../../Models/Note.dart';
 import '../../NoteSheets/manuel_entry_sheet.dart';
+import '../../Utils/FontSizeUtility.dart';
 import '../../Utils/PaddingUtility.dart';
 import '../bookPage/books_page.dart';
 import 'notes_list.dart';
 import 'package:get/get.dart';
+import '../../lang/translation_keys.dart' as translation;
+import 'package:my_notes/extensions/string_extension.dart';
 
 class NotesPage extends StatefulWidget {
   final Book book;
@@ -69,36 +73,6 @@ class _NotesPageState extends State<NotesPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  /*Expanded(
-                      flex: 1,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const BooksPage()));
-                                  },
-                                  icon: const Icon(Icons.arrow_circle_left),
-                                  iconSize: 25,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Expanded(
-                              flex: 3,
-                              child: Image(image: AssetImage("assets/logo3.png")))
-                        ],
-                      ),
-                    ),*/
                   Expanded(
                     flex: 10,
                     child: Column(
@@ -123,10 +97,18 @@ class _NotesPageState extends State<NotesPage> {
             ),
           ),
           floatingActionButton: SpeedDial(
+            //childrenButtonSize: Size(Get.width * 2 / 10, 65),
+            direction: SpeedDialDirection.up,
             icon: Icons.add,
+            switchLabelPosition: false,
+            label: Text(translation.addNote.locale),
             activeIcon: Icons.close,
+            childMargin: EdgeInsets.zero,
+            childPadding: const EdgeInsets.only(left: 5),
+            spaceBetweenChildren: 10,
             children: [
               SpeedDialChild(
+                  backgroundColor: ColorsUtility.blackText,
                   onTap: () {
                     showModalBottomSheet(
                         context: context,
@@ -141,16 +123,17 @@ class _NotesPageState extends State<NotesPage> {
                               ));
                         });
                   },
-                  child: const Icon(
+                  child: Icon(
+                    color: ColorsUtility.scaffoldBackgroundColor,
                     (Icons.note),
                   ),
-                  label: "Manual Entry"),
+                  label: translation.manualNote.locale,
+                  labelBackgroundColor: ColorsUtility.blackText,
+                  labelStyle: TextStyleUtility.profileInfoTextStyle
+                      .copyWith(color: ColorsUtility.scaffoldBackgroundColor)),
               SpeedDialChild(
+                  backgroundColor: ColorsUtility.blackText,
                   onTap: () {
-                    /*Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ScanTextPage(widget.book)));*/
                     showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
@@ -161,14 +144,17 @@ class _NotesPageState extends State<NotesPage> {
                               child: const AddImagePage());
                         });
                   },
-                  child: const Icon(Icons.insert_photo),
-                  label: "Record by Photo"),
+                  child: Icon(
+                    Icons.insert_photo,
+                    color: ColorsUtility.scaffoldBackgroundColor,
+                  ),
+                  label: translation.imageNote.locale,
+                  labelBackgroundColor: ColorsUtility.blackText,
+                  labelStyle: TextStyleUtility.profileInfoTextStyle
+                      .copyWith(color: ColorsUtility.scaffoldBackgroundColor)),
               SpeedDialChild(
+                  backgroundColor: ColorsUtility.blackText,
                   onTap: () {
-                    /* Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ScanTextPage(widget.book)));*/
                     showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
@@ -179,15 +165,17 @@ class _NotesPageState extends State<NotesPage> {
                           );
                         });
                   },
-                  child: const Icon(Icons.insert_photo),
-                  label: "Photo to Text"),
+                  child: Icon(
+                    Icons.insert_photo,
+                    color: ColorsUtility.scaffoldBackgroundColor,
+                  ),
+                  label: translation.imageToTextNote.locale,
+                  labelBackgroundColor: ColorsUtility.blackText,
+                  labelStyle: TextStyleUtility.profileInfoTextStyle
+                      .copyWith(color: ColorsUtility.scaffoldBackgroundColor)),
               SpeedDialChild(
+                  backgroundColor: ColorsUtility.blackText,
                   onTap: () {
-                    /*Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                SpeechToTextScreen(book: widget.book)));*/
                     showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
@@ -199,17 +187,24 @@ class _NotesPageState extends State<NotesPage> {
                         });
                   },
                   child: const Icon(Icons.mic),
-                  label: "Record Text by Voice"),
+                  label: translation.audioToTextNote.locale,
+                  labelBackgroundColor: ColorsUtility.blackText,
+                  labelStyle: TextStyleUtility.profileInfoTextStyle
+                      .copyWith(color: ColorsUtility.scaffoldBackgroundColor)),
               SpeedDialChild(
+                  backgroundColor: ColorsUtility.blackText,
                   onTap: () {
                     buildRecordVoiceBottomSheet(context);
                   },
-                  child: const Icon(Icons.mic),
-                  label: "Record Voice")
+                  child: Icon(
+                    Icons.mic,
+                    color: ColorsUtility.scaffoldBackgroundColor,
+                  ),
+                  label: translation.audioNote.locale,
+                  labelBackgroundColor: ColorsUtility.blackText)
             ],
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BottomNavigationBar(
             items: const [
               BottomNavigationBarItem(icon: Icon(null), label: ''),
@@ -238,7 +233,7 @@ class _NotesPageState extends State<NotesPage> {
     return AppBar(
       title: Text(
         widget.book.bookName.toString(),
-        style: TextStyle(color: ColorsUtility.appBarTitleColor),
+        style: TextStyle(color: ColorsUtility.appBarTitleColor, overflow: TextOverflow.ellipsis, fontSize: FontSizeUtility.font20),
       ),
       automaticallyImplyLeading: false,
       leading: IconButton(

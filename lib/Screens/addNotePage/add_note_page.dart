@@ -1,12 +1,9 @@
-import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:my_notes/Screens/bookPage/books_page.dart';
 import 'package:my_notes/Screens/notesPage/notes_page.dart';
 import 'package:my_notes/enums/noteTypeEnums.dart';
 
-import '../../Databases/NotesDatabase.dart';
 import '../../Models/Book.dart';
 import '../../Models/Note.dart';
 import '../../controllers/note_controller.dart';
@@ -289,37 +286,7 @@ class _AddNotePageState extends State<AddNotePage> {
                           flex: 5,
                           child: Container(
                             padding: EdgeInsets.all(16),
-                            child: DropDownFormField(
-                              titleText: 'Note Type',
-                              hintText: 'Please choose one',
-                              value: _dropDownResult,
-                              onSaved: (value) {},
-                              onChanged: (value) {
-                                setState(() {
-                                  _dropDownResult = value;
-                                });
-                              },
-                              dataSource: const [
-                                {
-                                  "display": "Citation",
-                                  "value": "alinti",
-                                },
-                                {
-                                  "display": "Source",
-                                  "value": "kaynakca",
-                                },
-                                /*{
-                                  "display": "Özel Notum",
-                                  "value": "özel_notum",
-                                },*/
-                                {
-                                  "display": "Other",
-                                  "value": "diger",
-                                },
-                              ],
-                              textField: 'display',
-                              valueField: 'value',
-                            ),
+                            child: Text("deleted"),
                           ),
                         ),
                         const SizedBox(

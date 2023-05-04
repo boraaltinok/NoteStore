@@ -7,6 +7,10 @@ import '../controllers/note_controller.dart';
 import '../enums/noteTypeEnums.dart';
 import '../widgets/addNotePagesAppBar.dart';
 import 'package:get/get.dart';
+import '../../lang/translation_keys.dart' as translation;
+import 'package:my_notes/extensions/string_extension.dart';
+
+
 class ManuelEntrySheet extends StatefulWidget {
   const ManuelEntrySheet({
     Key? key,
@@ -64,7 +68,7 @@ class _ManuelEntrySheetState extends State<ManuelEntrySheet> {
                   //maxLines: 10,
                   maxLines: null,
                   decoration: InputDecoration(
-                      hintText: "Write your note here",
+                      hintText: translation.writeYourNoteHere.locale,
                       hintStyle: TextStyle(color: ColorsUtility.hintTextColor),
                       border: InputBorder.none),
                   style: TextStyle(color: ColorsUtility.blackText),

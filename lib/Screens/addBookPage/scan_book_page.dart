@@ -1,17 +1,15 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:my_notes/Databases/NotesDatabase.dart';
 import 'package:my_notes/Screens/bookPage/books_page.dart';
 import 'package:my_notes/Utils/ColorsUtility.dart';
 import 'package:my_notes/constants.dart';
 import 'package:my_notes/controllers/book_controller.dart';
+import 'package:my_notes/extensions/string_extension.dart';
 import '../../Secrets/api_keys.dart';
 import 'package:get/get.dart';
 import '../../Models/Book.dart';
+import '../../lang/translation_keys.dart' as translation;
 
 class ScanBookPage extends StatefulWidget {
   const ScanBookPage({Key? key}) : super(key: key);
@@ -21,7 +19,7 @@ class ScanBookPage extends StatefulWidget {
 }
 
 class _ScanBookPageState extends State<ScanBookPage> {
-  MobileScannerController cameraController = MobileScannerController();
+  late MobileScannerController cameraController;
   bool _screenOpened = false;
   late bool _isBookAdded;
   BookController bookController = Get.put(BookController());
@@ -30,7 +28,18 @@ class _ScanBookPageState extends State<ScanBookPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    cameraController = MobileScannerController(
+        detectionSpeed: DetectionSpeed.noDuplicates, autoStart: true);
+    cameraController.stop(); //to avoid reopening bug
     _isBookAdded = false;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    cameraController.stop();
+    cameraController.dispose();
+    super.dispose();
   }
 
   @override
@@ -38,17 +47,20 @@ class _ScanBookPageState extends State<ScanBookPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.chevron_left, color: ColorsUtility.appBarIconColor,),
-          onPressed: (){
+          icon: Icon(
+            Icons.chevron_left,
+            color: ColorsUtility.appBarIconColor,
+          ),
+          onPressed: () {
             Get.back();
           },
         ),
-        iconTheme: IconThemeData(
-          color: Colors.black, //change your color here
-        ),
-        title: const Text(
-          "Scan ISBN Barcode",
-          style: TextStyle(color: Colors.black),
+        title: FittedBox(
+          fit: BoxFit.cover,
+          child: Text(
+            translation.scanISBNBarcode.locale,
+            style: TextStyle(color: Colors.black),
+          ),
         ),
         actions: [
           IconButton(
@@ -78,12 +90,14 @@ class _ScanBookPageState extends State<ScanBookPage> {
               builder: (context, state, child) {
                 switch (state as CameraFacing) {
                   case CameraFacing.front:
-                    return const Icon(
+                    return Icon(
                       Icons.camera_front,
+                      color: ColorsUtility.hintTextColor,
                     );
                   case CameraFacing.back:
-                    return const Icon(
+                    return Icon(
                       Icons.camera_rear,
+                      color: ColorsUtility.appBarIconColor,
                     );
                 }
               },
@@ -94,18 +108,17 @@ class _ScanBookPageState extends State<ScanBookPage> {
         ],
       ),
       body: MobileScanner(
-        allowDuplicates: true,
+        //allowDuplicates: true,
         controller: cameraController,
         onDetect: _foundBarcode,
       ),
     );
   }
 
-  Future<void> _foundBarcode(
-      Barcode barcode, MobileScannerArguments? args) async {
+  Future<void> _foundBarcode(BarcodeCapture barcode) async {
     ///open screen
     if (!_screenOpened) {
-      final String code = barcode.rawValue ?? "----";
+      final String code = barcode.barcodes[0].rawValue ?? "----";
       debugPrint('Barcode found $code');
       _screenOpened = true;
       fetchBooksInfo(code);
@@ -125,8 +138,8 @@ class _ScanBookPageState extends State<ScanBookPage> {
       }
     } on DioError catch (e) {
       if (e.response?.statusCode == 404) {
-        const snackBar =
-            SnackBar(content: Text('This is not a valid ISBN barcode'));
+        var snackBar =
+            SnackBar(content: Text('This is not a valid ISBN barcode $code'));
 
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       } else {
@@ -147,7 +160,11 @@ class _ScanBookPageState extends State<ScanBookPage> {
           bookCover: scannedBookInfo['book']['image']);
       print(scannedBookInfo['book']['image']);
       //await bookController.uploadBookCoverToStorage(authController.user.uid, scannedBookInfo['book']['image']);
-      await bookController.uploadBook(bookName: scannedBookInfo['book']['title'], bookAuthor: scannedBookInfo['book']['authors'][0],bookCoverPath:scannedBookInfo['book']['image']);
+      await bookController.uploadBook(
+          bookName: scannedBookInfo['book']['title'],
+          bookAuthor: scannedBookInfo['book']['authors'][0],
+          isItScan: true,
+          bookCoverPath: scannedBookInfo['book']['image']);
       //NotesDatabase.instance.createBook(scannedBook);
       setState(() {
         _isBookAdded = true;

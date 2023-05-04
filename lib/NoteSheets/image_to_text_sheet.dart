@@ -12,9 +12,12 @@ import 'package:my_notes/controllers/image_scan_controller.dart';
 import 'package:my_notes/controllers/note_controller.dart';
 import '../../Models/Book.dart';
 import '../Screens/addNotePage/add_note_page.dart';
+import '../Utils/FontSizeUtility.dart';
 import '../enums/noteActionEnums.dart';
 import '../enums/noteTypeEnums.dart';
 import '../widgets/addNotePagesAppBar.dart';
+import '../../lang/translation_keys.dart' as translation;
+import 'package:my_notes/extensions/string_extension.dart';
 
 class ImageToTextSheet extends StatefulWidget {
   final Book? book;
@@ -119,9 +122,9 @@ class _ImageToTextSheetState extends State<ImageToTextSheet> {
                               size: 30,
                             ),
                             Text(
-                              "Gallery",
+                              translation.gallery.locale,
                               style: TextStyle(
-                                  fontSize: 13, color: Colors.grey[600]),
+                                  fontSize: FontSizeUtility.font15, color: Colors.grey[600]),
                             )
                           ],
                         ),
@@ -153,9 +156,9 @@ class _ImageToTextSheetState extends State<ImageToTextSheet> {
                               size: 30,
                             ),
                             Text(
-                              "Camera",
+                              translation.camera.locale,
                               style: TextStyle(
-                                  fontSize: 13, color: Colors.grey[600]),
+                                  fontSize: FontSizeUtility.font15, color: Colors.grey[600]),
                             )
                           ],
                         ),
@@ -188,10 +191,10 @@ class _ImageToTextSheetState extends State<ImageToTextSheet> {
                 },
                 icon: const Icon(Icons.check),
               ),*/
-            const SizedBox(
-              height: 20,
+             SizedBox(
+              height: FontSizeUtility.font20,
             ),
-            Text("Scanned Text", style: TextStyleUtility.headingTextStyle,),
+            Text(translation.scannedText.locale, style: TextStyleUtility.headingTextStyle,),
             TextField(
               controller:
               Get.find<NoteController>().noteTextEditingController,
@@ -200,7 +203,7 @@ class _ImageToTextSheetState extends State<ImageToTextSheet> {
               minLines: 3,
               maxLines: null,
               decoration: InputDecoration(
-                  hintText: "Write and Edit your note here",
+                  hintText: translation.writeAndEditYourNoteHere.locale,
                   hintStyle: TextStyle(color: ColorsUtility.hintTextColor),
                   enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: ColorsUtility.blackText ?? Colors.black87)),
                   border: OutlineInputBorder(borderSide: BorderSide(color: ColorsUtility.blackText ?? Colors.black87))),

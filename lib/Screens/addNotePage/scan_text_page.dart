@@ -48,40 +48,6 @@ class _ScanTextPageState extends State<ScanTextPage> {
         noteTypeEnum: NoteTypeEnum.imageToTextNote,
         noteAction: NoteAction.noteAdd,
       ),
-      /*AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          "Scan Your Text",
-          style: TextStyle(color: ColorsUtility.appBarTitleColor),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.chevron_left,
-            color: ColorsUtility.appBarIconColor,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      //builder: (context) => AddNotePage(widget.bookId)));
-                      builder: (context) => AddNotePage(
-                            book: widget.book,
-                            scannedText: scannedText,
-                          )));
-            },
-            icon: Icon(
-              Icons.check_circle_outline,
-              color: ColorsUtility.appBarIconColor,
-            ),
-          )
-        ],
-      ),*/
       body: Padding(
         padding: PaddingUtility.scaffoldBodyGeneralPadding,
         child: Center(

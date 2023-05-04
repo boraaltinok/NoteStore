@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:my_notes/Utils/ColorsUtility.dart';
+import 'package:my_notes/Utils/FontSizeUtility.dart';
 import 'package:my_notes/Utils/PaddingUtility.dart';
 import 'package:my_notes/Utils/TextStyleUtility.dart';
 
@@ -14,6 +17,9 @@ class ImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    timeago.setLocaleMessages('tr', timeago.TrMessages());
+    timeago.setLocaleMessages('en', timeago.EnMessages());
+    timeago.setLocaleMessages('ru', timeago.EnMessages());
     return Container(
       decoration: BoxDecoration(
         color: ColorsUtility.transparentColor,
@@ -25,49 +31,74 @@ class ImageCard extends StatelessWidget {
       child: Card(
         color: ColorsUtility.scaffoldBackgroundColor,
         elevation: 8,
-        child: Stack(
+        child: Column(
           children: [
-            Positioned(
-              right: 0.0,
-              top: 0.0,
-              left: 0.0,
-              bottom: 0.0,
-              child: FittedBox(
-                clipBehavior: Clip.hardEdge,
-                fit: BoxFit.cover,
-                child: CachedNetworkImage(
-                  imageUrl: note.imagePath.toString(),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 0.0,
-              right: 0.0,
-              left: 0.0,
-              child: note.noteTitle.toString() == ""
-                  ? const SizedBox(
-                      width: 0,
-                      height: 0,
-                    )
-                  : Container(
-                      decoration:
-                          BoxDecoration(color: Colors.black87.withOpacity(0.6)),
-                      padding: PaddingUtility.paddingTransparentCardArea,
-                      child: Row(
-                        children: [
-                          Text(note.noteTitle.toString(),
-                              style: TextStyleUtility.textStyleNoteCardTitle)
-                        ],
+            Expanded(
+              flex: 10,
+              child: Stack(
+                children: [
+                  Positioned(
+                    right: 0.0,
+                    top: 0.0,
+                    left: 0.0,
+                    bottom: 0.0,
+                    child: FittedBox(
+                      clipBehavior: Clip.hardEdge,
+                      fit: BoxFit.cover,
+                      child: CachedNetworkImage(
+                        imageUrl: note.imagePath.toString(),
                       ),
                     ),
+                  ),
+                  Positioned(
+                    top: 0.0,
+                    right: 0.0,
+                    left: 0.0,
+                    child: note.noteTitle.toString() == ""
+                        ? const SizedBox(
+                            width: 0,
+                            height: 0,
+                          )
+                        : Container(
+                            decoration:
+                                BoxDecoration(color: Colors.black87.withOpacity(0.6)),
+                            padding: PaddingUtility.paddingTransparentCardArea,
+                            child: Row(
+                              children: [
+                                Text(note.noteTitle.toString(),
+                                    style: TextStyleUtility.textStyleNoteCardTitle)
+                              ],
+                            ),
+                          ),
+                  ),
+                  /*Positioned(
+                      bottom: 5.0,
+                      left: 5.0,
+                      child: Text(
+                        timeago.format(note.dateAdded),
+                        style: TextStyleUtility.textStyleDate,
+                      ))*/
+                ],
+              ),
             ),
-            Positioned(
-                bottom: 5.0,
-                left: 5.0,
-                child: Text(
-                  timeago.format(note.dateAdded),
-                  style: TextStyleUtility.textStyleDate,
-                ))
+            Expanded(
+              flex: 1,
+              child: Container(
+                color: ColorsUtility.whiteTextColor,
+                child: Padding(
+                  padding: PaddingUtility.paddingTextLeftRight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        timeago.format(note.dateAdded, locale: Get.locale?.languageCode ?? Get.fallbackLocale?.languageCode?? 'en'),
+                        style: TextStyleUtility.textStyleDate.copyWith(color: ColorsUtility.hintTextColor),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),

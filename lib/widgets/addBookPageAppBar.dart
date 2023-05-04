@@ -44,7 +44,9 @@ class AddBookPageAppBar extends StatelessWidget with PreferredSizeWidget {
               //await speechController.onSaveButtonPressed();
               Get.find<BookController>().uploadBook(
                   bookName: bookController.bookTitleController.text,
-                  bookAuthor: bookController.bookAuthorController.text);
+                  bookAuthor: bookController.bookAuthorController.text,
+                  isItScan: false,
+                  bookCoverPath: bookController.bookManualPhoto?.path ?? "");
               navigator.pop();
             },
             icon: Icon(

@@ -7,6 +7,8 @@ import 'package:my_notes/enums/noteActionEnums.dart';
 import '../Utils/ColorsUtility.dart';
 import '../controllers/speech_controller.dart';
 import '../enums/noteTypeEnums.dart';
+import '../../lang/translation_keys.dart' as translation;
+import 'package:my_notes/extensions/string_extension.dart';
 
 class AddNoteSheetsAppBar extends StatelessWidget with PreferredSizeWidget {
   AddNoteSheetsAppBar(
@@ -56,7 +58,7 @@ class AddNoteSheetsAppBar extends StatelessWidget with PreferredSizeWidget {
         controller: Get.find<NoteController>().noteTitleController,
         decoration: InputDecoration(
           labelText:
-              "Title",
+              translation.title.locale,
           labelStyle: TextStyle(color: ColorsUtility.hintTextColor),
         ),
         style: TextStyle(color: ColorsUtility.blackText),

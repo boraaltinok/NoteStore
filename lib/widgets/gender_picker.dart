@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_notes/constants.dart';
+import '../../lang/translation_keys.dart' as translation;
+import 'package:my_notes/extensions/string_extension.dart';
+
+import '../enums/genderTypeEnums.dart';
 
 class GenderPicker extends StatefulWidget {
   final ValueChanged<String> onGenderChanged;
@@ -12,14 +16,14 @@ class GenderPicker extends StatefulWidget {
 
 class _GenderPickerState extends State<GenderPicker> {
   // Initial Selected Value
-  String dropdownvalue = 'Male';
+  String dropdownvalue = translation.male.locale;
 
   // List of items in our dropdown menu
   var items = [
-    'Male',
-    'Female',
-    'Intersex',
-    'Prefer not to state',
+    translation.male.locale,
+    translation.female.locale,
+    translation.intersex.locale,
+    translation.preferNotToState.locale,
   ];
 
   @override
@@ -54,6 +58,15 @@ class _GenderPickerState extends State<GenderPicker> {
           // After selecting the desired option,it will
           // change button value to selected value
           onChanged: (String? newValue) {
+            if(newValue == translation.male.locale){
+              newValue = GenderType.male.returnGenderTypeNumber().toString();
+            }else if(newValue == translation.female.locale){
+              newValue = GenderType.female.returnGenderTypeNumber().toString();
+            }else if(newValue == translation.intersex.locale){
+              newValue = GenderType.intersex.returnGenderTypeNumber().toString();
+            }else if(newValue == translation.preferNotToState.locale){
+              newValue = GenderType.preferNotToState.returnGenderTypeNumber().toString();
+            }
             setState(() {
               widget.onGenderChanged(newValue!);
               dropdownvalue = newValue!;

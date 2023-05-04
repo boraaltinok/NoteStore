@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:my_notes/Utils/FontSizeUtility.dart';
 import 'package:my_notes/Utils/PaddingUtility.dart';
 import 'package:my_notes/Utils/TextStyleUtility.dart';
 import 'package:my_notes/Utils/TextUtility.dart';
@@ -170,7 +171,7 @@ class _AddSpeechPageState extends State<AddSpeechPage> {
           ? '${speechController.duration.inSeconds}s'
           : '${speechController.position.inSeconds}:${speechController.duration
           .inSeconds}s',
-      style: TextStyle(fontSize: 30, color: ColorsUtility.blackText),
+      style: TextStyle(fontSize: FontSizeUtility.font30, color: ColorsUtility.blackText),
     );
   }
 }

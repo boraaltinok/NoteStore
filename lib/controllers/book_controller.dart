@@ -3,6 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_notes/Utils/ColorsUtility.dart';
 import 'package:my_notes/Utils/SnackBarUtility.dart';
 import 'package:path_provider/path_provider.dart';
@@ -31,6 +32,18 @@ class BookController extends GetxController {
 
   bool get bookLongPressed => _bookLongPressed.value;
 
+  late Rx<File?> _pickedImage = null
+      .obs;
+
+  File? get bookManualPhoto => _pickedImage.value;
+
+  Rx<String> _bookManualPhotoPath = "".obs;
+
+  String get bookManualPhotoPath => _bookManualPhotoPath.value;
+
+
+
+
   @override
   void onInit() {
     super.onInit();
@@ -51,11 +64,28 @@ class BookController extends GetxController {
   initTextEditingControllers() {
     _bookAuthorController = TextEditingController();
     _bookTitleController = TextEditingController();
+    initManualBookCover();
+  }
+
+  initManualBookCover(){
+    _bookManualPhotoPath.value = "";
   }
 
   disposeTextEditingControllers() {
     _bookAuthorController.dispose();
     _bookTitleController.dispose();
+    _pickedImage.value = null;
+  }
+
+  void pickImage() async {
+    final pickedImage =
+    await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      SnackBarUtility.showCustomSnackbar(title: "Book Cover Picture", message: "Successfully selected book cover picture", icon: Icon(Icons.check_circle_outline));
+    }
+    _pickedImage = Rx<File?>(File(pickedImage!.path));
+    _bookManualPhotoPath.value = pickedImage!.path;
+    refresh();
   }
 
   void onBookLongPressed() {
@@ -76,11 +106,16 @@ class BookController extends GetxController {
   }
 
   Future<String> _uploadBookCoverToStorage(
-      String id, String bookCoverPath) async {
+      String id, String bookCoverPath, bool isItScan) async {
+    print("hal1");
+
     Reference ref = firebaseStorage.ref().child('bookCovers').child(id);
+    print("hal2");
+    UploadTask uploadTask;
 
-    UploadTask uploadTask = ref.putFile(await _fileFromImageUrl(bookCoverPath));
+    uploadTask = isItScan ? ref.putFile(await _fileFromImageUrl(bookCoverPath)) : ref.putFile(File(bookCoverPath));
 
+    print("hal3");
     TaskSnapshot snap = await uploadTask;
     String downloadUrl = await snap.ref.getDownloadURL();
     return downloadUrl;
@@ -89,6 +124,7 @@ class BookController extends GetxController {
   uploadBook(
       {required String bookName,
       required String bookAuthor,
+        required bool isItScan,
       String bookCoverPath = ""}) async {
     //isLoading.value = true;
     if (bookName == "" || bookAuthor == "") {
@@ -113,8 +149,9 @@ class BookController extends GetxController {
       //String videoUrl = await _uploadVideoToStorage("Video $len", videoPath);
       String bookCoverFirebaseUrl = "";
       if (bookCoverPath != "") {
+        print("bookCoverPath != """);
         bookCoverFirebaseUrl =
-            await _uploadBookCoverToStorage(randomId, bookCoverPath);
+            await _uploadBookCoverToStorage(randomId, bookCoverPath, isItScan);
       }
 
       /*String thumbnailUrl =

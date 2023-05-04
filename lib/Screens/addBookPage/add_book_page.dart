@@ -9,10 +9,13 @@ import 'package:my_notes/widgets/addNotePagesAppBar.dart';
 import '../../Databases/NotesDatabase.dart';
 import '../../Models/Book.dart';
 import 'package:get/get.dart';
-
+import 'dart:io';
 import '../../Utils/ColorsUtility.dart';
 import '../../controllers/book_controller.dart';
 import '../../widgets/addBookPageAppBar.dart';
+
+import '../../lang/translation_keys.dart' as translation;
+import 'package:my_notes/extensions/string_extension.dart';
 
 class AddBookPage extends StatefulWidget {
   AddBookPage({Key? key}) : super(key: key);
@@ -24,11 +27,13 @@ class AddBookPage extends StatefulWidget {
 class _AddBookPageState extends State<AddBookPage> {
   final formKey = GlobalKey<FormState>();
   BookController bookController = Get.put(BookController());
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     bookController.initTextEditingControllers();
+
   }
 
   @override
@@ -47,45 +52,115 @@ class _AddBookPageState extends State<AddBookPage> {
     BookController bookController = Get.put(BookController());
 
     ScrollController _scrollController =
-    ScrollController(initialScrollOffset: 0);
+        ScrollController(initialScrollOffset: 0);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AddBookPageAppBar(),
       body: Padding(
-        padding: PaddingUtility.scaffoldBodyGeneralPadding,
-        child: Column(
-          children: [
-            Container(
-              height: kToolbarHeight,
-              child: TextField(
-                controller: bookController.bookTitleController,
-                keyboardType: TextInputType.multiline,
-                //maxLines: 10,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    labelText: "Book Title",
-                    labelStyle: TextStyle(color: ColorsUtility.hintTextColor),
-                    border: InputBorder.none),
-                style: TextStyle(color: ColorsUtility.blackText),
+          padding: PaddingUtility.scaffoldBodyGeneralPadding,
+          child: Column(
+            children: [
+              Expanded(
+                flex: 1,
+                child: SizedBox(
+                  height: kToolbarHeight,
+                  child: TextField(
+                    controller: bookController.bookTitleController,
+                    keyboardType: TextInputType.multiline,
+                    //maxLines: 10,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        labelText: "Book Title",
+                        labelStyle:
+                            TextStyle(color: ColorsUtility.hintTextColor),
+                        border: InputBorder.none),
+                    style: TextStyle(color: ColorsUtility.blackText),
+                  ),
+                ),
               ),
-            ),
-            Container(
-              height: kToolbarHeight,
-              child: TextField(
-                controller: bookController.bookAuthorController,
-                keyboardType: TextInputType.multiline,
-                //maxLines: 10,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    labelText: "Author Name",
-                    labelStyle: TextStyle(color: ColorsUtility.hintTextColor),
-                    border: InputBorder.none),
-                style: TextStyle(color: ColorsUtility.blackText),
+              Expanded(
+                flex: 1,
+                child: SizedBox(
+                  height: kToolbarHeight,
+                  child: TextField(
+                    controller: bookController.bookAuthorController,
+                    keyboardType: TextInputType.multiline,
+                    //maxLines: 10,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        labelText: "Author Name",
+                        labelStyle:
+                            TextStyle(color: ColorsUtility.hintTextColor),
+                        border: InputBorder.none),
+                    style: TextStyle(color: ColorsUtility.blackText),
+                  ),
+                ),
               ),
-            ),
-          ],
-        )/*Column(
+              Expanded(
+                      flex: 4,
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Obx(() {
+                                return Container(
+                                  width: MediaQuery.of(context).size.width * 6 / 10,
+                                  height: MediaQuery.of(context).size.height * 4 / 10,
+                                  color: Colors.grey,
+                                  child: (bookController.bookManualPhotoPath != "") ? FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Image.file(
+                                          File(bookController.bookManualPhotoPath))) : const SizedBox(height: 0, width: 0,),
+                                );
+                              }
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              children: [
+                                Container(
+                                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.white,
+                                        onPrimary: Colors.grey,
+                                        shadowColor: Colors.grey[400],
+                                        elevation: 10,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8.0)),
+                                      ),
+                                      onPressed: () {
+                                        bookController.pickImage();
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 5),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(
+                                              Icons.camera_alt,
+                                              size: 30,
+                                            ),
+                                            Text(
+                                              translation.camera.locale,
+                                              style: TextStyle(
+                                                  fontSize: 13, color: Colors.grey[600]),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    )),
+                              ],
+                            ),
+                          )
+                        ],
+                      ))
+            ],
+          ) /*Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -239,7 +314,7 @@ class _AddBookPageState extends State<AddBookPage> {
             ),
           ],
         ),*/
-      ),
+          ),
     );
   }
 

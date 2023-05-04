@@ -44,6 +44,7 @@ class _ImageEntrySheetState extends State<ImageEntrySheet> {
 
   @override
   Widget build(BuildContext context) {
+    print("heha");
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: ColorsUtility.scaffoldBlackThemeBackgroundColor,

@@ -3,6 +3,7 @@ import 'package:my_notes/Screens/auth/signup_screen.dart';
 import 'package:get/get.dart';
 import 'package:my_notes/Screens/no_connection_page.dart';
 import 'package:my_notes/constants.dart';
+import 'package:my_notes/controllers/connectivity_controller.dart';
 
 import '../bookPage/books_page.dart';
 
@@ -29,11 +30,24 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     super.initState();
     _controller.forward();
 
-    Future.delayed(const Duration(seconds: 3), (){
-      if(firebaseAuth.currentUser == null){
+    Future.delayed(const Duration(seconds: 3), () async {
+      /*if(await Get.find<ConnectivityController>().checkConnectivity() == false){
+        return;
+      }*/
+
+
+      if(!Get.find<ConnectivityController>().isConnected){
+        Get.offAll(() => const NoConnectionPage());
+      }
+      else if(firebaseAuth.currentUser == null && Get.find<ConnectivityController>().isConnected){
         Get.offAll(() => SignUpScreen());
-      }else{
-        Get.offAll(() => const BooksPage());
+      }
+      else{
+        if(Get.currentRoute.toString() != "/BooksPage"){
+          Get.offAll(() => const BooksPage());
+          print("else");
+
+        }
         //Get.offAll(() => SignUpScreen());
       }
       //Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) =>  SignUpScreen())));

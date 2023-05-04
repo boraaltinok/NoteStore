@@ -1,19 +1,27 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:my_notes/Screens/bookPage/book_list.dart';
 import 'package:my_notes/Screens/addBookPage/scan_book_page.dart';
 import 'package:my_notes/Utils/ColorsUtility.dart';
 import 'package:my_notes/Utils/DimensionsUtility.dart';
+import 'package:my_notes/Utils/FontSizeUtility.dart';
+import 'package:my_notes/Utils/LocalizationUtility.dart';
 import 'package:my_notes/Utils/PaddingUtility.dart';
 import 'package:my_notes/Utils/SnackBarUtility.dart';
 import 'package:my_notes/Utils/TextStyleUtility.dart';
 import 'package:my_notes/constants.dart';
+import 'package:country_picker/country_picker.dart';
 
 import '../../Models/Book.dart';
 import '../../Models/user.dart';
+import '../../controllers/language_controller.dart';
+import '../../widgets/selectLanguagePopup.dart';
 import '../addBookPage/add_book_page.dart';
+import 'package:get/get.dart';
+
+import '../../lang/translation_keys.dart' as translation;
+import 'package:my_notes/extensions/string_extension.dart';
 
 class BooksPage extends StatefulWidget {
   const BooksPage({Key? key}) : super(key: key);
@@ -23,21 +31,20 @@ class BooksPage extends StatefulWidget {
 }
 
 class _BooksPageState extends State<BooksPage> {
-  late List<Book> books;
-  late bool isLoading;
   late Future<User?> _currentUser;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    isLoading = true;
-    refreshBooks();
     _currentUser =
         authController.getUser(userId: firebaseAuth.currentUser?.uid);
   }
 
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
+
+  final GlobalKey _popupMenuKey = GlobalKey();
+
 
   @override
   Widget build(BuildContext context) {
@@ -72,17 +79,21 @@ class _BooksPageState extends State<BooksPage> {
                               ),
                               accountName: Text(
                                 snapshot.data?.name ?? "DEFAULT",
-                                style: TextStyleUtility.textStyleBookInfoDialog,
+                                style: TextStyleUtility.textStyleBookInfoDialog
+                                    .copyWith(fontSize: FontSizeUtility.font15),
                               ),
                               accountEmail: Text(
                                 snapshot.data?.email ?? "DEFAULT",
-                                style: TextStyleUtility.textStyleBookInfoDialog,
+                                style: TextStyleUtility.textStyleBookInfoDialog
+                                    .copyWith(fontSize: FontSizeUtility.font15),
                               ),
                               currentAccountPicture: CircleAvatar(
                                 radius: 70,
-                                backgroundColor: Colors.blue,
-                                backgroundImage:
-                                    NetworkImage(snapshot.data!.profilePhoto),
+                                backgroundColor: ColorsUtility.hintTextColor,
+                                backgroundImage: snapshot
+                                        .data!.profilePhoto.isNotEmpty
+                                    ? NetworkImage(snapshot.data!.profilePhoto)
+                                    : null,
                               ),
                             ),
                           );
@@ -95,8 +106,7 @@ class _BooksPageState extends State<BooksPage> {
                     }),
                 GestureDetector(
                   onTap: () {
-                    SnackBarUtility.showCustomSnackbar(
-                        title: "pres", message: "press", icon: Icon(null));
+                    showPopupMenu(context, _popupMenuKey);
                   },
                   child: ListTile(
                     leading: Icon(
@@ -104,8 +114,9 @@ class _BooksPageState extends State<BooksPage> {
                       color: ColorsUtility.appBarIconColor,
                     ),
                     title: Text(
-                      "Change language",
-                      style: TextStyleUtility.textStyleBookInfoDialog,
+                      translation.changeLanguage.locale,
+                      style: TextStyleUtility.textStyleBookInfoDialog
+                          .copyWith(fontSize: FontSizeUtility.font15),
                     ),
                   ),
                 ),
@@ -123,8 +134,9 @@ class _BooksPageState extends State<BooksPage> {
                       color: ColorsUtility.appBarIconColor,
                     ),
                     title: Text(
-                      "Logout",
-                      style: TextStyleUtility.textStyleBookInfoDialog,
+                      translation.logout.locale,
+                      style: TextStyleUtility.textStyleBookInfoDialog
+                          .copyWith(fontSize: FontSizeUtility.font15),
                     ),
                   ),
                 ),
@@ -144,14 +156,9 @@ class _BooksPageState extends State<BooksPage> {
                 Expanded(
                   flex: 10,
                   child: Column(
-                    children: [
+                    children: const [
                       Expanded(
-                        child: Container(
-                          //height: 650,
-                          child: isLoading == true
-                              ? const Center(child: Text('B00KS ARE LOADING'))
-                              : BookList(books),
-                        ),
+                        child: BookList(),
                       ),
                     ],
                   ),
@@ -189,7 +196,7 @@ class _BooksPageState extends State<BooksPage> {
                         return Padding(
                           padding: MediaQuery.of(context).viewInsets,
                           child: SizedBox(
-                              height: 5 * kToolbarHeight,
+                              height: 10 * kToolbarHeight,
                               width: MediaQuery.of(context).size.width,
                               child: AddBookPage()),
                         );
@@ -203,7 +210,7 @@ class _BooksPageState extends State<BooksPage> {
                 child: const Icon(
                   (Icons.note),
                 ),
-                label: "Manual Entry"),
+                label: translation.manualEntry.locale),
             SpeedDialChild(
                 onTap: () {
                   Navigator.push(
@@ -212,50 +219,52 @@ class _BooksPageState extends State<BooksPage> {
                           builder: (context) => const ScanBookPage()));
                 },
                 child: const Icon(Icons.insert_photo),
-                label: "Scan Barcode"),
+                label: translation.scanBarcode.locale),
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomNavigationBar(
-          onTap: (index){
-            if(index == 0){
-              showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (context) {
-                    return Padding(
-                      padding: MediaQuery.of(context).viewInsets,
-                      child: SizedBox(
-                          height: 5 * kToolbarHeight,
-                          width: MediaQuery.of(context).size.width,
-                          child: AddBookPage()),
-                    );
-                  });
-            }else if(index == 1){
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ScanBookPage()));
-            }
-          },
+            onTap: (index) {
+              if (index == 0) {
+                showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (context) {
+                      return Padding(
+                        padding: MediaQuery.of(context).viewInsets,
+                        child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 8 / 10,
+                            width: MediaQuery.of(context).size.width,
+                            child: AddBookPage()),
+                      );
+                    });
+              } else if (index == 1) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ScanBookPage()));
+              }
+            },
             unselectedItemColor: ColorsUtility.blackText,
             selectedItemColor: ColorsUtility.blackText,
-            selectedLabelStyle: TextStyle(color: ColorsUtility.blackText, fontSize: 15),
-            unselectedLabelStyle: TextStyle(color: ColorsUtility.blackText, fontSize: 15),
+            selectedLabelStyle:
+                TextStyle(color: ColorsUtility.blackText, fontSize: 15),
+            unselectedLabelStyle:
+                TextStyle(color: ColorsUtility.blackText, fontSize: 15),
             items: [
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.book_rounded,
                     color: ColorsUtility.appBarIconColor,
                   ),
-                  label: 'Add Book Manually',
+                  label: translation.addBookManually.locale,
                   backgroundColor: ColorsUtility.blackText),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.search,
                     color: ColorsUtility.appBarIconColor,
                   ),
-                  label: 'Scan ISBN Barcode')
+                  label: translation.scanISBNBarcode.locale)
             ],
             elevation: 10,
             backgroundColor: ColorsUtility.appBarBackgroundColor),
@@ -279,14 +288,54 @@ class _BooksPageState extends State<BooksPage> {
         },
       ),
       title: Text(
-        "Books",
-        style: TextStyle(color: ColorsUtility.appBarTitleColor),
+        translation.books.locale,
+        style: TextStyle(
+            color: ColorsUtility.appBarTitleColor,
+            fontSize: FontSizeUtility.font30),
       ),
       actions: [
+        PopupMenuButton(
+
+          key: _popupMenuKey,
+            icon: Icon(
+              Icons.language,
+              color: ColorsUtility.appBarIconColor,
+            ),
+            onSelected: (value) {
+              Get.find<LanguageController>()
+                  .changeLanguage(
+                  locale: value);
+
+            },
+            color: ColorsUtility.scaffoldBackgroundColor,
+            elevation: 10,
+            itemBuilder: (BuildContext bc) {
+              final Country? turkey = Country.tryParse('turkey');
+              final Country? us = Country.tryParse('us');
+              final Country? russia = Country.tryParse('russia');
+              return [
+                 PopupMenuItem(
+                  value: LocalizationUtility.TR_LOCALE,
+                  child: Text("${turkey?.flagEmoji ?? ""} TURKISH", style: TextStyleUtility.textStyleBookInfoDialog,),
+                ),
+                 PopupMenuItem(
+                  value: LocalizationUtility.EN_LOCALE,
+                  child: Text("${us?.flagEmoji ?? ""} ENGLISH", style: TextStyleUtility.textStyleBookInfoDialog,),
+                ),
+                 PopupMenuItem(
+                  value: LocalizationUtility.RU_LOCALE,
+                  child: Text("${russia?.flagEmoji ?? ""} RUSSIAN", style: TextStyleUtility.textStyleBookInfoDialog,),
+                )
+              ];
+            }),
         /*Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: InkWell(
-              onTap: () {},
+              onTap: () {
+                /*showDialog(context: context ,builder: (context){
+                  return GestureDetector(onTap: () => Get.back(),child: SelectLanguagePopUp());
+                });*/
+              },
               child: Icon(
                 Icons.language,
                 color: ColorsUtility.appBarIconColor,
@@ -296,18 +345,42 @@ class _BooksPageState extends State<BooksPage> {
     );
   }
 
-  Future refreshBooks() async {
-    /*print("listing books:");
-
-    books = await NotesDatabase.instance.readAllBooks();
-
-    for (int i = 0; i < books.length; i++) {
-      print(
-          'BOOK ID: ${books[i].bookId}, BOOK NAME: ${books[i].bookName}, BOOK AUTHOR: ${books[i].bookAuthor}, DATE ADDED: ${books[i].dateAdded}');
-    }*/
-    books = [];
-    setState(() {
-      isLoading = false;
+  void showPopupMenu(BuildContext context, GlobalKey popupMenuKey) async {
+    final RenderBox overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    final RenderBox buttonBox = popupMenuKey.currentContext!.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        buttonBox.localToGlobal(Offset.zero, ancestor: overlay),
+        buttonBox.localToGlobal(buttonBox.size.bottomRight(Offset.zero), ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+    final Country? turkey = Country.tryParse('turkey');
+    final Country? us = Country.tryParse('us');
+    final Country? russia = Country.tryParse('russia');
+    await showMenu(
+      context: context,
+      position: position,
+      color: ColorsUtility.scaffoldBackgroundColor,
+      elevation: 10,
+      items: [
+        PopupMenuItem(
+          value: LocalizationUtility.TR_LOCALE,
+          child: Text("${turkey?.flagEmoji ?? ""} TURKISH", style: TextStyleUtility.textStyleBookInfoDialog,),
+        ),
+        PopupMenuItem(
+          value: LocalizationUtility.EN_LOCALE,
+          child: Text("${us?.flagEmoji ?? ""} ENGLISH", style: TextStyleUtility.textStyleBookInfoDialog,),
+        ),
+        PopupMenuItem(
+          value: LocalizationUtility.RU_LOCALE,
+          child: Text("${russia?.flagEmoji ?? ""} RUSSIAN", style: TextStyleUtility.textStyleBookInfoDialog,),
+        ),
+      ],
+    ).then((selectedValue) {
+      if (selectedValue != null) {
+        Get.find<LanguageController>().changeLanguage(locale: selectedValue);
+      }
     });
   }
 }

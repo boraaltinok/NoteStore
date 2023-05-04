@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../Utils/ColorsUtility.dart';
-
+import '../../lang/translation_keys.dart' as translation;
+import 'package:my_notes/extensions/string_extension.dart';
 enum NoteAction {
   noteEdit,
   noteAdd,
@@ -27,12 +28,12 @@ extension NoteActionExtension on NoteAction {
     switch (this) {
       case NoteAction.noteAdd:
         return  Text(
-          "Save",
+          translation.save.locale,
           style: TextStyle(color: ColorsUtility.blackText),
         );
       case NoteAction.noteEdit:
         return  Text(
-          "Edit",
+          translation.save.locale,
           style: TextStyle(color: ColorsUtility.blackText),
         );
     }

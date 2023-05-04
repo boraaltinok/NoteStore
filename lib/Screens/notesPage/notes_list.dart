@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:my_notes/Databases/NotesDatabase.dart';
 import 'package:my_notes/NoteSheets/image_entry_sheet.dart';
 import 'package:my_notes/NoteSheets/manuel_entry_sheet.dart';
@@ -12,6 +13,8 @@ import 'package:my_notes/Screens/notesPage/manuel_card.dart';
 import 'package:my_notes/Screens/notesPage/note_card.dart';
 import 'package:my_notes/Utils/ColorsUtility.dart';
 import 'package:my_notes/Utils/PaddingUtility.dart';
+import 'package:my_notes/Utils/QuotesUtility.dart';
+import 'package:my_notes/Utils/TextStyleUtility.dart';
 import 'package:my_notes/controllers/speech_controller.dart';
 import 'package:my_notes/enums/noteActionEnums.dart';
 import 'package:my_notes/enums/noteTypeEnums.dart';
@@ -45,10 +48,14 @@ class _NotesListState extends State<NotesList> {
 
   late NoteController noteController;
   late SpeechController speechController;
+  late QuotesUtility quotesUtility;
+  late List randomQuote;
 
   @override
   void initState() {
     // TODO: implement initState
+    quotesUtility = QuotesUtility();
+    randomQuote = quotesUtility.selectRandomQuote();
     super.initState();
     //isLoading = true;
     noteController = Get.put(NoteController());
@@ -81,7 +88,17 @@ class _NotesListState extends State<NotesList> {
               child: Column(
                 children: [
                   Expanded(
-                      child: MasonryGridView.count(
+                      child: noteController.noteList.isEmpty  ? Padding(
+                        padding: PaddingUtility.scaffoldBodyGeneralPadding * 2,
+                        child: Center(child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(randomQuote[0],textAlign: TextAlign.center, style: GoogleFonts.petitFormalScript(color: ColorsUtility.hintTextColor, fontWeight: FontWeight.bold, fontSize: 18),),
+                            Text("-${randomQuote[1]}",textAlign: TextAlign.center, style: GoogleFonts.petitFormalScript(color: ColorsUtility.hintTextColor, fontWeight: FontWeight.bold, fontSize: 14),),
+
+                          ],
+                        ),),
+                      ) :MasonryGridView.count(
                     padding: const EdgeInsets.only(top: 0),
                     crossAxisCount: 2,
                     mainAxisSpacing: 4,

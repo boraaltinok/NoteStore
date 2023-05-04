@@ -1,18 +1,36 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:my_notes/extensions/string_extension.dart';
 
 import '../constants.dart';
+import '../../lang/translation_keys.dart' as translation;
 
 class CountryPicker extends StatefulWidget {
   final ValueChanged<String> onCountryChanged;
 
-  const CountryPicker({Key? key, required this.onCountryChanged}) : super(key: key);
+  CountryPicker({Key? key, required this.onCountryChanged}) : super(key: key);
+
+
+
 
   @override
   State<CountryPicker> createState() => _CountryPickerState();
 }
 
 class _CountryPickerState extends State<CountryPicker> {
+  late String selectCountry;
+  late String search;
+  late String startTypingToSearch;
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    selectCountry = translation.selectCountry.locale;
+    search = translation.search.locale;
+    startTypingToSearch = translation.startTypingToSearch.locale;
+    super.initState();
+  }
   String selectedCountry = "";
   @override
   Widget build(BuildContext context) {
@@ -25,11 +43,13 @@ class _CountryPickerState extends State<CountryPicker> {
         onPressed: () {
           showCountryPicker(
             context: context,
+
             //Optional.  Can be used to exclude(remove) one ore more country from the countries list (optional).
             exclude: <String>['KN', 'MF'],
             favorite: <String>['TR'],
             //Optional. Shows phone code before the country name.
             onSelect: (Country country) {
+              print(country);
               widget.onCountryChanged(country.name);
               selectedCountry = country.name;
               setState(() {
@@ -49,9 +69,9 @@ class _CountryPickerState extends State<CountryPicker> {
               inputDecoration: InputDecoration(
                 filled: true,
                 fillColor: buttonColor,
-                labelText: 'Search',
+                labelText: search,
                 labelStyle: const TextStyle(color: borderColor,),
-                hintText: 'Start typing to search',
+                hintText: startTypingToSearch,
                 hintStyle: const TextStyle(color: borderColor),
                 prefixIcon: const Icon(Icons.search, color: borderColor,),
                 border: OutlineInputBorder(
@@ -69,7 +89,7 @@ class _CountryPickerState extends State<CountryPicker> {
           );
         },
         child: Text(
-          selectedCountry == "" ? "Select Country" : selectedCountry,
+          selectedCountry == "" ? selectCountry : selectedCountry,
           style: TextStyle(fontSize: 20, color: buttonColor),
         ),
       ),

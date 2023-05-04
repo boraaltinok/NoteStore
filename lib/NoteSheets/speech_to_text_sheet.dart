@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:my_notes/Utils/FontSizeUtility.dart';
 import 'package:my_notes/controllers/note_controller.dart';
 import 'package:my_notes/enums/noteActionEnums.dart';
 import 'package:my_notes/enums/noteTypeEnums.dart';
@@ -9,6 +10,9 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:get/get.dart';
 import '../../Models/Book.dart';
 import '../Utils/ColorsUtility.dart';
+
+import '../../lang/translation_keys.dart' as translation;
+import 'package:my_notes/extensions/string_extension.dart';
 
 class SpeechToTextSheet extends StatefulWidget {
   final Book? book;
@@ -79,7 +83,7 @@ class _SpeechToTextSheetState extends State<SpeechToTextSheet> {
         body: SingleChildScrollView(
           reverse: true,
           child: Container(
-            padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 150.0),
+            padding:  EdgeInsets.fromLTRB(FontSizeUtility.font30, FontSizeUtility.font30, FontSizeUtility.font30, FontSizeUtility.font30 * 5),
             child:
             TextField(
               controller:
@@ -89,7 +93,7 @@ class _SpeechToTextSheetState extends State<SpeechToTextSheet> {
               minLines: 3,
               maxLines: null,
               decoration: InputDecoration(
-                  hintText: "Write and Edit your note here",
+                  hintText: translation.writeAndEditYourNoteHere.locale,
                   hintStyle: TextStyle(color: ColorsUtility.hintTextColor),
                   enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: ColorsUtility.blackText ?? Colors.black87)),
                   border: OutlineInputBorder(borderSide: BorderSide(color: ColorsUtility.blackText ?? Colors.black87))),

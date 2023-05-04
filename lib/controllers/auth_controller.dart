@@ -3,12 +3,17 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_notes/Screens/splash/splash_screen.dart';
 import 'package:my_notes/Models/user.dart' as userModel;
 import 'package:image_picker/image_picker.dart';
 import 'package:my_notes/Screens/bookPage/books_page.dart';
+import 'package:my_notes/Utils/ColorsUtility.dart';
+import 'package:my_notes/Utils/SnackBarUtility.dart';
 
 import '../Screens/auth/login_screen.dart';
 import '../constants.dart';
@@ -65,7 +70,7 @@ class AuthController extends GetxController {
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
-      Get.snackbar("Profile Picture", "Successfully selected profile picture");
+      SnackBarUtility.showCustomSnackbar(title: "Profile Picture", message: "Successfully selected profile picture", icon: Icon(Icons.check_circle_outline));
     }
     _pickedImage = Rx<File?>(File(pickedImage!.path));
     profilePhotoPath.value = pickedImage!.path;
@@ -73,36 +78,47 @@ class AuthController extends GetxController {
   }
 
   //registering user
-  Future<void> registerUser(String username, String email, String password,
+  Future<void> registerUser(String username, String email, String password, String verifyPassword,
       File? image, String country, String gender) async {
     try {
       if (username.isNotEmpty &&
           email.isNotEmpty &&
           password.isNotEmpty &&
-          image != null &&
+          verifyPassword.isNotEmpty &&
+          /*image != null &&*/
           country.isNotEmpty &&
           gender.isNotEmpty) {
         //save our user to our auth and firebase database(firestore)
-        UserCredential credential = await firebaseAuth
-            .createUserWithEmailAndPassword(email: email, password: password);
-        String downloadUrl = await _uploadToStorage(image);
-        userModel.User user = userModel.User(
-            name: username,
-            uid: credential.user!.uid,
-            email: email,
-            profilePhoto: downloadUrl,
-            country: country,
-            gender: gender);
+        if(password != verifyPassword){
+          SnackBarUtility.showCustomSnackbar(title: 'Password Error', message: 'Passwords do not match', icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor,));
+        }else{
+          UserCredential credential = await firebaseAuth
+              .createUserWithEmailAndPassword(email: email, password: password);
+          String downloadUrl = "";
+          if(image != null){
+            downloadUrl = await _uploadToStorage(image);
+          }
+          userModel.User user = userModel.User(
+              name: username,
+              uid: credential.user!.uid,
+              email: email,
+              profilePhoto: downloadUrl,
+              country: country,
+              gender: gender);
 
-        firestore
-            .collection('users')
-            .doc(credential.user!.uid)
-            .set(user.toJson());
+          firestore
+              .collection('users')
+              .doc(credential.user!.uid)
+              .set(user.toJson());
+          SnackBarUtility.showCustomSnackbar(title: 'Success', message: 'Account Created', icon:  Icon(Icons.check_circle_outline, color: ColorsUtility.appBarIconColor,));
+
+        }
+
       } else {
-        Get.snackbar('Error Creating Account', 'Please enter all the fields');
+        SnackBarUtility.showCustomSnackbar(title: 'Field Error', message: 'Please enter all fields', icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
       }
     } catch (e) {
-      Get.snackbar('Error Creating Account', e.toString());
+      SnackBarUtility.showCustomSnackbar(title: 'Error signing up', message: e.toString(), icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
     }
   }
 
@@ -113,10 +129,51 @@ class AuthController extends GetxController {
             email: email, password: password);
         print('log success');
       } else {
-        Get.snackbar('Error Logging in to Account', 'Fields can not be empty');
+        SnackBarUtility.showCustomSnackbar(title: 'Error', message: 'Fields can not be empty', icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
       }
     } catch (e) {
-      Get.snackbar('Error Logging in to Account', e.toString());
+      SnackBarUtility.showCustomSnackbar(title: 'Error logging in', message: e.toString(), icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
+    }
+  }
+  //Google Sign In
+  signInWithGoogle() async {
+    //begin interactive sign in
+    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+
+    //obtain auth details from the request
+    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+
+    //create a new credential for user
+    final credential = GoogleAuthProvider.credential(
+      accessToken: gAuth.accessToken,
+      idToken: gAuth.idToken
+    );
+
+    //get user details
+    final String name = gUser.displayName ?? '';
+    final String email = gUser.email ?? '';
+    final String photoUrl = gUser.photoUrl ?? '';
+
+
+    //finally, lets sign in
+    final UserCredential userCredential =  await firebaseAuth.signInWithCredential(credential);
+    final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+    final DocumentSnapshot userDoc = await usersCollection.doc(userCredential.user?.uid).get();
+
+    if (!userDoc.exists) {
+      print("inside does not exists");
+      userModel.User user = userModel.User(
+          name: name,
+          uid: userCredential.user!.uid ,
+          email: email,
+          profilePhoto: "",
+          country: "",
+          gender: "");
+
+      firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set(user.toJson());
     }
   }
 
