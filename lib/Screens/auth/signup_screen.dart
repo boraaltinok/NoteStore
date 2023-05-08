@@ -2,6 +2,7 @@ import 'package:country_picker/country_picker.dart';
 //import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:lottie/lottie.dart';
 import 'package:my_notes/Utils/ColorsUtility.dart';
 import 'package:my_notes/Utils/FontSizeUtility.dart';
 import 'package:my_notes/Utils/PaddingUtility.dart';
@@ -62,8 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    print("printing");
-    print(translation.appName.locale);
+    authController.initializeProfilePhotoPath();
     //print(LocaleKeys.signUp_txt_signup.locale);
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
@@ -85,7 +85,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             height: Get.height,
             child: Padding(
               padding: PaddingUtility.scaffoldBodyGeneralPadding,
-              child: Column(
+              child: authController.isRegisteringLoading? Lottie.asset('animations/book_page_gif.json', height: Get.height * 6 /10, reverse: true, repeat: true):Column(
                 //mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: kToolbarHeight),
@@ -115,9 +115,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 radius: 64,
                                 backgroundImage:
                                     //NetworkImage(authController.profilePhotoPath.value),
-                                    (authController.profilePhotoPath.value !=
-                                            "https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png")
-                                        ? null
+                                    authController.profilePhotoPath.value !=
+                                            ""
+                                        ? FileImage(File(authController.profilePhotoPath.value))
                                         : Image.asset('assets/logo.png').image,
                                 backgroundColor: ColorsUtility.scaffoldBackgroundColor,
                               ),

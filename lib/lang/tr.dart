@@ -49,6 +49,9 @@ class Tr {
         translation.languageChanged: 'Dil Değişti',
         translation.or:"Ya da",
         translation.signInWithGoogle: 'Google ile giriş yap',
+        translation.turkish: "TÜRKÇE",
+        translation.english: "İNGİLİZCE",
+        translation.russian: "RUSÇA",
 
         translation.title: 'Başlık',
         translation.subtitle: 'This is the subtitle',

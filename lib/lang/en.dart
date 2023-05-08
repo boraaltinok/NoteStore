@@ -51,7 +51,9 @@ class En {
         translation.languageChanged: 'Language Changed',
         translation.or: 'or',
         translation.signInWithGoogle: 'Sign in with Google',
-
+        translation.turkish: "Turkish",
+        translation.english: "English",
+        translation.russian: "Russian",
 
 
 

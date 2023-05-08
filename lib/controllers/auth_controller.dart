@@ -21,7 +21,7 @@ import '../constants.dart';
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
 
-  late Rx<File?> _pickedImage = null
+  late Rx<File?> _pickedImage = File("")
       .obs; //this is observable keeps track if the image variable is changed or not
   late Rx<User?> _user; // this is not model user this is FİREBASE AUTH USER
   Rx<String> profilePhotoPath = "".obs;
@@ -29,6 +29,14 @@ class AuthController extends GetxController {
   File? get profilePhoto => _pickedImage.value;
 
   User get user => _user.value!;
+
+  Rx<bool> _isRegisteringLoading = false.obs;
+
+  bool get isRegisteringLoading => _isRegisteringLoading.value;
+
+  Rx<bool> _isLoggingLoading = false.obs;
+
+  bool get isLoggingLoading => _isLoggingLoading.value;
 
   @override
   void onReady() {
@@ -46,8 +54,18 @@ class AuthController extends GetxController {
       Get.offAll(() => const SplashScreen());
     } else {
       print('UID IS : ${user.uid}');
-      Get.offAll(() => const SplashScreen());
+      //Get.offAll(() => const SplashScreen());
+      Get.offAll(() => const BooksPage());
+
     }
+  }
+
+  setIsRegisteringLoading({required bool isRegistering}){
+    _isRegisteringLoading.value = isRegistering;
+  }
+
+  setIsLoggingLoading({required bool isLoading}){
+    _isLoggingLoading.value = isLoading;
   }
 
   //upload to firebase storage
@@ -65,15 +83,18 @@ class AuthController extends GetxController {
     return downloadUrl;
   }
 
+  initializeProfilePhotoPath(){
+    profilePhotoPath = "".obs;
+  }
+
   //pick Image
   void pickImage() async {
     final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       SnackBarUtility.showCustomSnackbar(title: "Profile Picture", message: "Successfully selected profile picture", icon: Icon(Icons.check_circle_outline));
     }
-    print(_pickedImage.value?.path ?? "else");
-    _pickedImage = Rx<File?>(File(pickedImage!.path));
+    _pickedImage.value = File(pickedImage?.path ?? "");
     profilePhotoPath.value = pickedImage!.path;
     refresh();
   }
@@ -81,13 +102,15 @@ class AuthController extends GetxController {
   //registering user
   Future<void> registerUser(String username, String email, String password, String verifyPassword,
       File? image, String country, String gender) async {
+    setIsRegisteringLoading(isRegistering: true);
+
     try {
       if (username.isNotEmpty &&
           email.isNotEmpty &&
           password.isNotEmpty &&
           verifyPassword.isNotEmpty
-          /*image != null &&*/
-          /*country.isNotEmpty &&
+      /*image != null &&*/
+      /*country.isNotEmpty &&
           gender.isNotEmpty*/) {
         //save our user to our auth and firebase database(firestore)
         if(password != verifyPassword){
@@ -96,7 +119,8 @@ class AuthController extends GetxController {
           UserCredential credential = await firebaseAuth
               .createUserWithEmailAndPassword(email: email, password: password);
           String downloadUrl = "";
-          if(image != null){
+          if(image != null && image.path != ""){
+            print("about to download");
             downloadUrl = await _uploadToStorage(image);
           }
           userModel.User user = userModel.User(
@@ -112,27 +136,38 @@ class AuthController extends GetxController {
               .doc(credential.user!.uid)
               .set(user.toJson());
           SnackBarUtility.showCustomSnackbar(title: 'Success', message: 'Account Created', icon:  Icon(Icons.check_circle_outline, color: ColorsUtility.appBarIconColor,));
+          setIsRegisteringLoading(isRegistering: false);
 
         }
 
       } else {
         SnackBarUtility.showCustomSnackbar(title: 'Field Error', message: 'Please enter all fields', icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
+        setIsRegisteringLoading(isRegistering: false);
+
       }
     } catch (e) {
+      print("on ERROR ${e.toString()}");
       SnackBarUtility.showCustomSnackbar(title: 'Error signing up', message: e.toString(), icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
+      setIsRegisteringLoading(isRegistering: false);
+
     }
   }
 
   void loginUser(String email, String password) async {
+    setIsLoggingLoading(isLoading: true);
     try {
       if (email.isNotEmpty && password.isNotEmpty) {
         await firebaseAuth.signInWithEmailAndPassword(
             email: email, password: password);
         print('log success');
+        setIsLoggingLoading(isLoading: false);
+
       } else {
+        setIsLoggingLoading(isLoading: false);
         SnackBarUtility.showCustomSnackbar(title: 'Error', message: 'Fields can not be empty', icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
       }
     } catch (e) {
+      setIsLoggingLoading(isLoading: false);
       SnackBarUtility.showCustomSnackbar(title: 'Error logging in', message: e.toString(), icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
     }
   }
@@ -146,8 +181,8 @@ class AuthController extends GetxController {
 
     //create a new credential for user
     final credential = GoogleAuthProvider.credential(
-      accessToken: gAuth.accessToken,
-      idToken: gAuth.idToken
+        accessToken: gAuth.accessToken,
+        idToken: gAuth.idToken
     );
 
     //get user details
@@ -181,7 +216,7 @@ class AuthController extends GetxController {
   Future<userModel.User?> getUser({required userId}) async {
     try {
       DocumentSnapshot doc =
-          await firestore.collection('users').doc(userId).get();
+      await firestore.collection('users').doc(userId).get();
 
       userModel.User user = userModel.User.fromSnap(doc);
 

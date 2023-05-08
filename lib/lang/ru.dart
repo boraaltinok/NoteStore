@@ -50,6 +50,9 @@ class Ru {
     translation.success: 'успех',
     translation.languageChanged: 'Язык изменен на русский',
     translation.or: 'или',
-    translation.signInWithGoogle: 'войти через Google'
+    translation.signInWithGoogle: 'войти через Google',
+    translation.turkish: 'турецкий',
+    translation.english: 'Английский',
+    translation.russian: 'Русский',
   };
 }

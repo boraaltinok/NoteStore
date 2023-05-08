@@ -91,7 +91,7 @@ class _BooksPageState extends State<BooksPage> {
                                 radius: 70,
                                 backgroundColor: ColorsUtility.hintTextColor,
                                 backgroundImage: snapshot
-                                        .data!.profilePhoto.isNotEmpty
+                                    .data!.profilePhoto.isNotEmpty
                                     ? NetworkImage(snapshot.data!.profilePhoto)
                                     : null,
                               ),
@@ -248,9 +248,9 @@ class _BooksPageState extends State<BooksPage> {
             unselectedItemColor: ColorsUtility.blackText,
             selectedItemColor: ColorsUtility.blackText,
             selectedLabelStyle:
-                TextStyle(color: ColorsUtility.blackText, fontSize: 15),
+            TextStyle(color: ColorsUtility.blackText, fontSize: 15),
             unselectedLabelStyle:
-                TextStyle(color: ColorsUtility.blackText, fontSize: 15),
+            TextStyle(color: ColorsUtility.blackText, fontSize: 15),
             items: [
               BottomNavigationBarItem(
                   icon: Icon(
@@ -296,7 +296,7 @@ class _BooksPageState extends State<BooksPage> {
       actions: [
         PopupMenuButton(
 
-          key: _popupMenuKey,
+            key: _popupMenuKey,
             icon: Icon(
               Icons.language,
               color: ColorsUtility.appBarIconColor,
@@ -314,17 +314,17 @@ class _BooksPageState extends State<BooksPage> {
               final Country? us = Country.tryParse('us');
               final Country? russia = Country.tryParse('russia');
               return [
-                 PopupMenuItem(
+                PopupMenuItem(
                   value: LocalizationUtility.TR_LOCALE,
-                  child: Text("${turkey?.flagEmoji ?? ""} TURKISH", style: TextStyleUtility.textStyleBookInfoDialog,),
+                  child: Text("${turkey?.flagEmoji ?? ""} ${translation.turkish.locale.toUpperCase()}", style: TextStyleUtility.textStyleBookInfoDialog,),
                 ),
-                 PopupMenuItem(
+                PopupMenuItem(
                   value: LocalizationUtility.EN_LOCALE,
-                  child: Text("${us?.flagEmoji ?? ""} ENGLISH", style: TextStyleUtility.textStyleBookInfoDialog,),
+                  child: Text("${us?.flagEmoji ?? ""} ${translation.english.locale.toUpperCase()}", style: TextStyleUtility.textStyleBookInfoDialog,),
                 ),
-                 PopupMenuItem(
+                PopupMenuItem(
                   value: LocalizationUtility.RU_LOCALE,
-                  child: Text("${russia?.flagEmoji ?? ""} RUSSIAN", style: TextStyleUtility.textStyleBookInfoDialog,),
+                  child: Text("${russia?.flagEmoji ?? ""} ${translation.russian.locale.toUpperCase()}", style: TextStyleUtility.textStyleBookInfoDialog,),
                 )
               ];
             }),
@@ -366,15 +366,15 @@ class _BooksPageState extends State<BooksPage> {
       items: [
         PopupMenuItem(
           value: LocalizationUtility.TR_LOCALE,
-          child: Text("${turkey?.flagEmoji ?? ""} TURKISH", style: TextStyleUtility.textStyleBookInfoDialog,),
+          child: Text("${turkey?.flagEmoji ?? ""} ${translation.turkish.locale.toUpperCase()}", style: TextStyleUtility.textStyleBookInfoDialog,),
         ),
         PopupMenuItem(
           value: LocalizationUtility.EN_LOCALE,
-          child: Text("${us?.flagEmoji ?? ""} ENGLISH", style: TextStyleUtility.textStyleBookInfoDialog,),
+          child: Text("${us?.flagEmoji ?? ""} ${translation.english.locale.toUpperCase()}", style: TextStyleUtility.textStyleBookInfoDialog,),
         ),
         PopupMenuItem(
           value: LocalizationUtility.RU_LOCALE,
-          child: Text("${russia?.flagEmoji ?? ""} RUSSIAN", style: TextStyleUtility.textStyleBookInfoDialog,),
+          child: Text("${russia?.flagEmoji ?? ""} ${translation.russian.locale.toUpperCase()}", style: TextStyleUtility.textStyleBookInfoDialog,),
         ),
       ],
     ).then((selectedValue) {

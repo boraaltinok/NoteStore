@@ -126,6 +126,7 @@ class NoteController extends GetxController {
         imageURL = await _uploadImageNoteToStorage(randomId, imagePath);
       }
       if (speechPath != "") {
+        print("here speech path $speechPath");
         speechURL = await _uploadSpeechNoteToStorage(randomId, speechPath);
       }
 
@@ -168,9 +169,9 @@ class NoteController extends GetxController {
   Future<String> _uploadSpeechNoteToStorage(
       String id, String speechPath) async {
     Reference ref = firebaseStorage.ref().child('speechNotes').child(id);
-
+    print( "speechPath $speechPath");
     UploadTask uploadTask = ref.putFile(
-        File(speechPath), SettableMetadata(contentType: 'audio/wav'));
+        File(speechPath), SettableMetadata(contentType: 'audio/mpeg'));
 
     TaskSnapshot snap = await uploadTask;
     String downloadUrl = await snap.ref.getDownloadURL();

@@ -59,3 +59,8 @@ const subtitle = 'subtitle';
 const withParam = 'withParam';
 const or = 'or';
 const signInWithGoogle = 'signInWithGoogle';
+
+const turkish = 'turkish';
+const english = 'english';
+const russian = 'russian';
+

@@ -33,32 +33,24 @@ class NoteCard extends StatefulWidget {
 class _NoteCardState extends State<NoteCard> {
   bool isPlaying = false;
 
-  late SpeechController speechController;
+  //late SpeechController speechController;
   bool isLoading = true;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    speechController =
+    /*speechController =
         Get.put(SpeechController(), tag: widget.index.toString());
     Future.delayed(Duration.zero, () async {
       await speechController.initRecorder();
-    });
+    });*/
 
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      return speechController.isRecorderReady == false
-          ? Center(
-              child: Text(
-                "loading",
-                style: TextStyleUtility.textStyleBookInfoDialog,
-              ),
-            )
-          : Container(
+      return Container(
               decoration: const BoxDecoration(
                 color: Colors.transparent,
               ),
@@ -118,18 +110,16 @@ class _NoteCardState extends State<NoteCard> {
                       child: Slider(
 
                           min: 0,
-                          max: speechController.duration.inMilliseconds
-                              .toDouble(),
+                          max: 100,
                           activeColor: buttonColor,
                           inactiveColor: borderColor,
-                          value: speechController.position.inMilliseconds
-                              .toDouble(),
+                          value: 0,
                           onChanged: (value) async {
-                            final position =
+                            /*final position =
                                 Duration(milliseconds: value.toInt());
                             await speechController.audioPlayer.seek(position);
 
-                            await speechController.audioPlayer.resume();
+                            await speechController.audioPlayer.resume();*/
                           }),
                     ),
                     Expanded(
@@ -138,7 +128,7 @@ class _NoteCardState extends State<NoteCard> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              " ${speechController.formattedTime(timeInSecond: widget.note.speechDuration ?? 0)}",
+                              " ${Get.find<SpeechController>().formattedTime(timeInSecond: widget.note.speechDuration ?? 0)}",
                               style: TextStyle(color: buttonColor),
                             ),
                           ],
@@ -147,13 +137,14 @@ class _NoteCardState extends State<NoteCard> {
                       flex: 4,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: const [
                           CircleAvatar(
                             radius: 35,
                             child: Icon(
-                                speechController.isPlaying
+                                /*speechController.isPlaying
                                     ? Icons.pause
-                                    : Icons.play_arrow,
+                                    : Icons.play_arrow,*/
+                              Icons.play_arrow,
                               size: 50,
                               ),
                           ),
@@ -203,6 +194,5 @@ class _NoteCardState extends State<NoteCard> {
                 ),
               ),
             );
-    });
   }
 }

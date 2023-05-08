@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
+import 'package:my_notes/Utils/SnackBarUtility.dart';
 import 'package:my_notes/controllers/note_controller.dart';
 import 'package:my_notes/enums/noteTypeEnums.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -67,6 +70,12 @@ class SpeechController extends GetxController {
     recorder = FlutterSoundRecorder();
     _recorderController = RecorderController().obs;
 
+    _recorderController.value.sampleRate = 44100;
+    _recorderController.value.bitRate = 48000;
+    _recorderController.value.iosEncoder = IosEncoder.kAudioFormatMPEG4AAC;
+    _recorderController.value.androidEncoder = AndroidEncoder.aac;
+
+
     _isRecorderReady.value = true;
     _isRecorderControllerReady.value = true;
 
@@ -109,7 +118,7 @@ class SpeechController extends GetxController {
       }
     });
 
-    await recorder.startRecorder(toFile: 'audio');
+    await recorder.startRecorder(toFile: 'audio.aac');
     await _recorderController.value.record();
     _isRecording.value = true;
   }
@@ -133,6 +142,9 @@ class SpeechController extends GetxController {
     await _recorderController.value.stop();
     final path = await recorder.stopRecorder();
     final audioFile = File(path!);
+    print("printing path");
+
+    print(path);
     return path;
   }
 
@@ -156,7 +168,9 @@ class SpeechController extends GetxController {
 
   Future playAudio(String url) async {
     _isPlaying.value = true;
-    await audioPlayer.play(UrlSource(url));
+    print(url);
+    try{    await audioPlayer.play(UrlSource(url));
+    }catch(e){print(e);}
 
     audioPlayer.onDurationChanged.listen((newDuration) {
       _duration.value = newDuration;
@@ -185,6 +199,11 @@ class SpeechController extends GetxController {
   }
 
   Future onPressRecordButton() async {
+    bool permission = await recorderController.checkPermission();
+    if(!permission){
+      SnackBarUtility.showCustomSnackbar(title: "Permission Request", message: "You have to give permission to start recording", icon: Icon(Icons.error));
+      return;
+    }
     if (recorder.isRecording) {
       await pauseRecorder();
     } else {

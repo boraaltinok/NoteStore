@@ -6,6 +6,7 @@ import 'package:my_notes/Screens/bookPage/books_page.dart';
 import 'package:my_notes/Screens/no_connection_page.dart';
 import 'package:my_notes/Screens/splash/splash_screen.dart';
 
+import '../Screens/auth/login_screen.dart';
 import '../Screens/auth/signup_screen.dart';
 import '../constants.dart';
 
@@ -28,7 +29,9 @@ class ConnectivityController extends GetxController {
       } else if (_isConnected.value == true) {
         if (firebaseAuth.currentUser == null) {
           print("here3");
-          Get.offAll(() => SignUpScreen());
+          //Get.offAll(() => SignUpScreen());
+          Get.offAll(() => LoginScreen());
+
         } else {
           Get.offAll(() => const BooksPage());
           print("else connectivity");
