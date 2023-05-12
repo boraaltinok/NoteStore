@@ -9,7 +9,7 @@ import '../Utils/ColorsUtility.dart';
 import '../controllers/speech_controller.dart';
 import '../enums/noteTypeEnums.dart';
 
-class ImageDisplaySheetAppBar extends StatelessWidget with PreferredSizeWidget {
+class ImageDisplaySheetAppBar extends StatelessWidget implements PreferredSizeWidget {
   ImageDisplaySheetAppBar({
     Key? key,
     required this.noteTitleController,

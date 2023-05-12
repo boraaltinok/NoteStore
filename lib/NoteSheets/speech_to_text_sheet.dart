@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/Utils/FontSizeUtility.dart';

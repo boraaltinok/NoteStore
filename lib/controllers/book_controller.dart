@@ -77,9 +77,9 @@ class BookController extends GetxController {
     _pickedImage.value = null;
   }
 
-  void pickImage() async {
+  void pickImage(ImageSource source) async {
     final pickedImage =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: source);
     if (pickedImage != null) {
       SnackBarUtility.showCustomSnackbar(title: "Book Cover Picture", message: "Successfully selected book cover picture", icon: Icon(Icons.check_circle_outline));
     }
@@ -210,7 +210,7 @@ class BookController extends GetxController {
           .refFromURL(toBeDeletedBook.bookCover ?? "")//deleting the book cover
           .delete();
     }catch(e){
-      print(e);
+      print("can not delete book cover $e ${toBeDeletedBook.bookCover}");
     }
     final QuerySnapshot noteSnapshots = await firestore
         .collection('users')

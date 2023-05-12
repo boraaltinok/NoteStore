@@ -16,6 +16,7 @@ class CustomWaveformsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AudioWaveforms(
+
       size: Size(
           MediaQuery.of(context).size.width, 400.0),
       backgroundColor: ColorsUtility.blackText ?? Colors.black87,

@@ -9,7 +9,7 @@ import '../Utils/ColorsUtility.dart';
 import '../controllers/speech_controller.dart';
 import '../enums/noteTypeEnums.dart';
 
-class AddBookPageAppBar extends StatelessWidget with PreferredSizeWidget {
+class AddBookPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   AddBookPageAppBar({
     Key? key,
   }) : super(key: key);

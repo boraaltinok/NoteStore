@@ -134,7 +134,7 @@ class BookCard extends StatelessWidget {
                                         LocalizationUtility
                                             .TR_LOCALE.languageCode
                                     ? "${timeago.format(book.dateAdded, locale: Get.locale?.languageCode ?? Get.fallbackLocale?.languageCode ?? 'en')} ${translation.added.locale}"
-                                    : "Error",
+                                    : Get.locale?.languageCode == LocalizationUtility.RU_LOCALE.languageCode ? "${timeago.format(book.dateAdded, locale: Get.locale?.languageCode ?? Get.fallbackLocale?.languageCode ?? 'en')} ${translation.added.locale}" :"Error",
                             style: TextStyleUtility.textStyleBookInfoDialog)))
               ],
             )),

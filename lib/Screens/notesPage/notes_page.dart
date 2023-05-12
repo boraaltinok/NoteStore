@@ -277,7 +277,7 @@ class _NotesPageState extends State<NotesPage> {
                 if (confirmed != null && confirmed) {
                   // Code to delete the document goes here
                   await Get.find<BookController>().deleteBook(widget.book);
-                  Get.off(const BooksPage());
+                  Get.off(() => const BooksPage());
                 }
               });
             },

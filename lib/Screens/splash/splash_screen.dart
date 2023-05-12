@@ -5,6 +5,7 @@ import 'package:my_notes/Screens/no_connection_page.dart';
 import 'package:my_notes/constants.dart';
 import 'package:my_notes/controllers/connectivity_controller.dart';
 
+import '../auth/login_screen.dart';
 import '../bookPage/books_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -40,7 +41,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         Get.offAll(() => const NoConnectionPage());
       }
       else if(firebaseAuth.currentUser == null && Get.find<ConnectivityController>().isConnected){
-        Get.offAll(() => SignUpScreen());
+        //Get.offAll(() => SignUpScreen());
+        Get.offAll(() => LoginScreen());
       }
       else{
         if(Get.currentRoute.toString() != "/BooksPage"){

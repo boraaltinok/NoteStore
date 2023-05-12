@@ -10,7 +10,7 @@ import '../enums/noteTypeEnums.dart';
 import '../../lang/translation_keys.dart' as translation;
 import 'package:my_notes/extensions/string_extension.dart';
 
-class AddNoteSheetsAppBar extends StatelessWidget with PreferredSizeWidget {
+class AddNoteSheetsAppBar extends StatelessWidget implements PreferredSizeWidget {
   AddNoteSheetsAppBar(
       {Key? key,
       required this.noteTitleController,

@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:my_notes/Utils/SnackBarUtility.dart';
 import 'package:my_notes/controllers/note_controller.dart';
 import 'package:my_notes/enums/noteTypeEnums.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
@@ -23,6 +24,8 @@ class SpeechController extends GetxController {
   final Rx<bool> _isRecording = false.obs;
   final Rx<bool> _isRecorderPaused = false.obs;
   final Rx<bool> _isRecorderControllerReady = false.obs;
+  late Directory appDirectory;
+  String? path;
 
   Duration finalNoteDuration = Duration.zero;
   final Rx<String> _noteId = Rx<String>("");
@@ -60,6 +63,9 @@ class SpeechController extends GetxController {
     _position.value = Duration.zero;
     finalNoteDuration = Duration.zero;
 
+    appDirectory = await getApplicationDocumentsDirectory();
+    path = "${appDirectory.path}/audio.aac";
+
     _isRecorderControllerReady.value = false;
 
     _isRecording.value = false;
@@ -68,7 +74,14 @@ class SpeechController extends GetxController {
     _isRecorderReady.value = false;
 
     recorder = FlutterSoundRecorder();
-    _recorderController = RecorderController().obs;
+    RecorderController tmpRecorderController = RecorderController()
+      ..androidEncoder = AndroidEncoder.aac
+      ..androidOutputFormat = AndroidOutputFormat.mpeg4
+      ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
+      ..sampleRate = 44100
+      ..bitRate = 48000;
+
+    _recorderController = tmpRecorderController.obs;
 
     _recorderController.value.sampleRate = 44100;
     _recorderController.value.bitRate = 48000;
@@ -109,6 +122,10 @@ class SpeechController extends GetxController {
     if (!_isRecorderReady.value || !_isRecorderControllerReady.value) {
       return;
     }
+    final hasPermission = await recorderController.checkPermission();
+    if (!hasPermission) {
+      throw 'No permission to record';
+    }
     _recorderController.value.addListener(() {
       _duration.value = _recorderController.value.elapsedDuration;
     });
@@ -118,8 +135,10 @@ class SpeechController extends GetxController {
       }
     });
 
+
+
     await recorder.startRecorder(toFile: 'audio.aac');
-    await _recorderController.value.record();
+    await _recorderController.value.record(path: path);
     _isRecording.value = true;
   }
 
@@ -191,6 +210,10 @@ class SpeechController extends GetxController {
   }
 
   Future onPressPlayAudioButton() async {
+    if(Get.find<NoteController>().currentNote.speechDuration == 0){
+      SnackBarUtility.showCustomSnackbar(title: "empty audio", message: "empty audio", icon: const Icon(null));
+      return;
+    }
     if (isPlaying) {
       await pauseAudio();
     } else {
