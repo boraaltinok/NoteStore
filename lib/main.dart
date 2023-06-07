@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: ColorsUtility.scaffoldBackgroundColor,
           appBarTheme: AppBarTheme(
               systemOverlayStyle: SystemUiOverlayStyle.dark
-                  .copyWith(statusBarColor: Colors.black),
+                  .copyWith(statusBarColor: ColorsUtility.blackText,systemNavigationBarIconBrightness: Brightness.light, statusBarIconBrightness: Brightness.light),
               centerTitle: true,
               titleTextStyle:
                   const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),

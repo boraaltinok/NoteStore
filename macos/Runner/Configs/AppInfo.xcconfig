@@ -8,7 +8,7 @@
 PRODUCT_NAME = my_notes
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.myNotes
+PRODUCT_BUNDLE_IDENTIFIER = com.mo.notestore
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2023 com.example. All rights reserved.

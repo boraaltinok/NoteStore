@@ -74,6 +74,7 @@ class _SpeechToTextSheetState extends State<SpeechToTextSheet> {
           child: FloatingActionButton(
             backgroundColor: Colors.black,
             onPressed: () async {
+              print("on pressed");
               await _listen();
             },
             child: Icon(widget.isListening ? Icons.mic : Icons.mic_none,),
@@ -113,7 +114,10 @@ class _SpeechToTextSheetState extends State<SpeechToTextSheet> {
   }
 
   _listen() async {
+    print("inside listen");
     if (!widget.isListening) {
+      print("inside listen1");
+
       bool available = await _speech.initialize(
         onStatus: (val) {
           setState(() {
@@ -125,21 +129,30 @@ class _SpeechToTextSheetState extends State<SpeechToTextSheet> {
             }
           });
         },
-        onError: (val) {},
+        onError: (val) {
+          print("error $val");
+        },
       );
       if (available) {
+        print("available");
 
         setState(() => widget.isListening = true);
+        print("available1");
 
-        _speech.listen(
-          onResult: (val) => setState(() {
-            _text = val.recognizedWords;
-            noteController.noteTextEditingController.text =  _text;
-            if (val.hasConfidenceRating && val.confidence > 0) {
-              _confidence = val.confidence;
-            }
-          }),
-        );
+          _speech.listen(
+            sampleRate: 44100,
+              onResult: (val) => setState(() {
+                print("available2");
+
+                _text = val.recognizedWords;
+              print(val.recognizedWords);
+              noteController.noteTextEditingController.text =  _text;
+              if (val.hasConfidenceRating && val.confidence > 0) {
+                _confidence = val.confidence;
+              }
+            }),
+          );
+
       }
     } else {
       setState(() => widget.isListening = false);

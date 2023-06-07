@@ -274,6 +274,7 @@ class _BooksPageState extends State<BooksPage> {
 
   AppBar buildAppBar() {
     return AppBar(
+
       /*leading: Container(
           padding: EdgeInsets.all(8),
           child: FittedBox(child: Image.asset("assets/logo.png"))),*/
