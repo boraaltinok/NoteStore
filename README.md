@@ -1,14 +1,13 @@
 # NoteStore
-
 NoteStore is a mobile application available on both the App Store and Google Play Store. It provides users with a convenient way to manage their book collection and take notes. With NoteStore, you can easily organize your books, create various types of notes, and access them whenever you need.
 ![notestore_banner](https://github.com/boraaltinok/NoteStore/assets/63509903/8eadf5fb-ec02-4c13-924b-3fc81b379eca)
 
-## Links
-https://apps.apple.com/tr/app/notestoreapp/id6449714965
-https://play.google.com/store/apps/details?id=com.notestore.mynotesv2&gl=TR
+## Installation
+- App Store: [Download NoteStore on the App Store](https://apps.apple.com/tr/app/notestoreapp/id6449714965)
+- Google Play Store: [Download NoteStore on Google Play](https://play.google.com/store/apps/details?id=com.notestore.mynotesv2&gl=TR)
+
 
 ## Features
-
 - **Barcode Scanner**: Use the barcode scanner to quickly add books to your collection. NoteStore automatically retrieves book details such as cover page, author, and more using the scanned ISBN barcode.
 
 - **Manual Book Creation**: You can also manually create books by selecting a cover picture, author, and name. This allows you to add books that may not have an ISBN barcode or are not available in the scanner's database.
@@ -22,13 +21,7 @@ https://play.google.com/store/apps/details?id=com.notestore.mynotesv2&gl=TR
 
 - **Authentication**: NoteStore provides authentication functionality to secure your data. You can create an account or sign in with your existing credentials to access your book collection and notes.
 
-## Installation
-
-- App Store: [Download NoteStore on the App Store](https://www.appstorelink.com/notestore)
-- Google Play Store: [Download NoteStore on Google Play](https://play.google.com/store/apps/details?id=com.notestore.mynotesv2&gl=TR)
-
 ## Usage
-
 1. Install NoteStore on your mobile device from the App Store or Google Play Store using the provided download links.
 
 2. Launch the app and create an account or sign in with your existing credentials.
