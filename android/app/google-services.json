@@ -1,0 +1,182 @@
+{
+  "project_info": {
+    "project_number": "952514182741",
+    "project_id": "notestore-eea0e",
+    "storage_bucket": "notestore-eea0e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952514182741:android:55ab03af88732a975f9edc",
+        "android_client_info": {
+          "package_name": "com.example.my_notes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952514182741-0j0asnt5e6pu1bhovvcp5cql5iceno1n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.my_notes",
+            "certificate_hash": "9a1ba8725df2aa115fd1519f0b8772a91f3916bc"
+          }
+        },
+        {
+          "client_id": "952514182741-nc3eecbcit74udevhls3rg594ago5kgf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzd2qv6FL34SmImrV2C6nEGz1cTE36F8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952514182741-6em5p56m1eq8ajendp9n4c9f85hhtt7b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "952514182741-1eci3gkai3iljoudjugn74psseche2m6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.myNotes"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952514182741:android:24039755d8ebf8145f9edc",
+        "android_client_info": {
+          "package_name": "com.notestore.mynotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952514182741-38ev24c7blpg9qlj94sfo01rohf4p94t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.notestore.mynotes",
+            "certificate_hash": "9a1ba8725df2aa115fd1519f0b8772a91f3916bc"
+          }
+        },
+        {
+          "client_id": "952514182741-69pi3tt1f78fbh3uie0d63jt5gckkrho.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.notestore.mynotes",
+            "certificate_hash": "a74a8b2fc9fe1b1dbe18695aa0f735a0432f3025"
+          }
+        },
+        {
+          "client_id": "952514182741-t1kf66dlg4b045hq3e2uh6if0srun8hb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.notestore.mynotes",
+            "certificate_hash": "303b1f0869cd9dca1c6a3adf4a0fb4d3ed5a146f"
+          }
+        },
+        {
+          "client_id": "952514182741-nc3eecbcit74udevhls3rg594ago5kgf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzd2qv6FL34SmImrV2C6nEGz1cTE36F8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952514182741-6em5p56m1eq8ajendp9n4c9f85hhtt7b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "952514182741-1eci3gkai3iljoudjugn74psseche2m6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.myNotes"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952514182741:android:e9bb2cdd927007645f9edc",
+        "android_client_info": {
+          "package_name": "com.notestore.mynotesv2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952514182741-0sg8s3s5f01cr3usp93cq13e88grm6jk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.notestore.mynotesv2",
+            "certificate_hash": "9a1ba8725df2aa115fd1519f0b8772a91f3916bc"
+          }
+        },
+        {
+          "client_id": "952514182741-3tnltdi6khcbjku8ieaqkkr7ea0g9ks7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.notestore.mynotesv2",
+            "certificate_hash": "76076dcf507690d93f425e4265ab44527f4dac06"
+          }
+        },
+        {
+          "client_id": "952514182741-5rcn2nmsr14r2u3vggrhliq8hdi1e85b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.notestore.mynotesv2",
+            "certificate_hash": "303b1f0869cd9dca1c6a3adf4a0fb4d3ed5a146f"
+          }
+        },
+        {
+          "client_id": "952514182741-jtpguco3dal120t31ohr860n2pcikovk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.notestore.mynotesv2",
+            "certificate_hash": "a74a8b2fc9fe1b1dbe18695aa0f735a0432f3025"
+          }
+        },
+        {
+          "client_id": "952514182741-nc3eecbcit74udevhls3rg594ago5kgf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzd2qv6FL34SmImrV2C6nEGz1cTE36F8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952514182741-6em5p56m1eq8ajendp9n4c9f85hhtt7b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "952514182741-1eci3gkai3iljoudjugn74psseche2m6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.myNotes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
