@@ -1,5 +1,6 @@
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:audioplayers/audioplayers.dart';
+
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -37,7 +38,7 @@ class AddSpeechPage extends StatefulWidget {
 
 class _AddSpeechPageState extends State<AddSpeechPage> {
   NoteController noteController = Get.find<NoteController>();
-  final SpeechController speechController = Get.put(SpeechController());
+  late SpeechController speechController;
   final loadingText = TextUtility.loadingText;
 
   @override
@@ -45,7 +46,16 @@ class _AddSpeechPageState extends State<AddSpeechPage> {
     // TODO: implement initState
     super.initState();
 
+    if (Get.isRegistered<SpeechController>()) {
+      speechController = Get.find<SpeechController>();
+    } else {
+      speechController = Get.put(SpeechController());
+    }
+
+
     if (widget.noteAction == NoteAction.noteEdit) {
+      print("about to init");
+      speechController.initAudioPlayer();
       noteController.initTextEditingControllers(
           noteAction: widget.noteAction, note: noteController.currentNote);
     } else if (widget.noteAction == NoteAction.noteAdd) {
@@ -122,12 +132,13 @@ class _AddSpeechPageState extends State<AddSpeechPage> {
                     child: Slider(
                         min: 0,
                         max: speechController.duration.inMilliseconds
-                            .toDouble(),
+                            .toDouble() + 700,
                         activeColor: buttonColor,
                         inactiveColor: borderColor,
                         value:
                         speechController.position.inMilliseconds.toDouble(),
                         onChanged: (value) async {
+                          print("value $value");
                           final position = Duration(
                               milliseconds: value.toInt());
                           await speechController.audioPlayer.seek(position);

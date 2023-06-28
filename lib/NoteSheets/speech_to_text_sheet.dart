@@ -1,6 +1,7 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/Utils/FontSizeUtility.dart';
+import 'package:my_notes/controllers/language_controller.dart';
 import 'package:my_notes/controllers/note_controller.dart';
 import 'package:my_notes/enums/noteActionEnums.dart';
 import 'package:my_notes/enums/noteTypeEnums.dart';
@@ -139,7 +140,16 @@ class _SpeechToTextSheetState extends State<SpeechToTextSheet> {
         setState(() => widget.isListening = true);
         print("available1");
 
+        String languageCode= Get.find<LanguageController>().languages[Get.find<LanguageController>().selectedLanguageIndex].languageCode;
+        String? countryCode= Get.find<LanguageController>().languages[Get.find<LanguageController>().selectedLanguageIndex].countryCode;
+        //languageCode =Get.locale?.languageCode ?? 'en';
+        //countryCode = Get.locale?.countryCode ?? 'US';
+        print("languageCodecountryCode");
+
+        print("${languageCode}_$countryCode");
+        String localeId = "${languageCode}_$countryCode";
           _speech.listen(
+            localeId: localeId,
             sampleRate: 44100,
               onResult: (val) => setState(() {
                 print("available2");

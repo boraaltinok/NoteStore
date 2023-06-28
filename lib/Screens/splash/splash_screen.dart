@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_notes/Screens/auth/signup_screen.dart';
 import 'package:get/get.dart';
 import 'package:my_notes/Screens/no_connection_page.dart';
+import 'package:my_notes/Utils/ColorsUtility.dart';
 import 'package:my_notes/constants.dart';
 import 'package:my_notes/controllers/connectivity_controller.dart';
 
@@ -42,6 +43,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       }
       else if(firebaseAuth.currentUser == null && Get.find<ConnectivityController>().isConnected){
         //Get.offAll(() => SignUpScreen());
+        print("about to go to login");
         Get.offAll(() => LoginScreen());
       }
       else{
@@ -66,6 +68,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     return FadeTransition(
       opacity: _animation,
       child: Scaffold(
+        backgroundColor: ColorsUtility.scaffoldBackgroundColor,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

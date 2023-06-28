@@ -14,7 +14,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:my_notes/Screens/bookPage/books_page.dart';
 import 'package:my_notes/Utils/ColorsUtility.dart';
 import 'package:my_notes/Utils/SnackBarUtility.dart';
+import 'package:my_notes/controllers/book_controller.dart';
 
+import '../Models/Book.dart';
 import '../Screens/auth/login_screen.dart';
 import '../constants.dart';
 
@@ -56,15 +58,14 @@ class AuthController extends GetxController {
       print('UID IS : ${user.uid}');
       //Get.offAll(() => const SplashScreen());
       Get.offAll(() => const BooksPage());
-
     }
   }
 
-  setIsRegisteringLoading({required bool isRegistering}){
+  setIsRegisteringLoading({required bool isRegistering}) {
     _isRegisteringLoading.value = isRegistering;
   }
 
-  setIsLoggingLoading({required bool isLoading}){
+  setIsLoggingLoading({required bool isLoading}) {
     _isLoggingLoading.value = isLoading;
   }
 
@@ -83,16 +84,19 @@ class AuthController extends GetxController {
     return downloadUrl;
   }
 
-  initializeProfilePhotoPath(){
+  initializeProfilePhotoPath() {
     profilePhotoPath = "".obs;
   }
 
   //pick Image
   void pickImage() async {
     final pickedImage =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
-      SnackBarUtility.showCustomSnackbar(title: "Profile Picture", message: "Successfully selected profile picture", icon: Icon(Icons.check_circle_outline));
+      SnackBarUtility.showCustomSnackbar(
+          title: "Profile Picture",
+          message: "Successfully selected profile picture",
+          icon: Icon(Icons.check_circle_outline));
     }
     _pickedImage.value = File(pickedImage?.path ?? "");
     profilePhotoPath.value = pickedImage!.path;
@@ -100,26 +104,33 @@ class AuthController extends GetxController {
   }
 
   //registering user
-  Future<void> registerUser(String username, String email, String password, String verifyPassword,
-      File? image, String country, String gender) async {
+  Future<void> registerUser(String username, String email, String password,
+      String verifyPassword, File? image, String country, String gender) async {
     setIsRegisteringLoading(isRegistering: true);
 
     try {
       if (username.isNotEmpty &&
-          email.isNotEmpty &&
-          password.isNotEmpty &&
-          verifyPassword.isNotEmpty
-      /*image != null &&*/
-      /*country.isNotEmpty &&
-          gender.isNotEmpty*/) {
+              email.isNotEmpty &&
+              password.isNotEmpty &&
+              verifyPassword.isNotEmpty
+          /*image != null &&*/
+          /*country.isNotEmpty &&
+          gender.isNotEmpty*/
+          ) {
         //save our user to our auth and firebase database(firestore)
-        if(password != verifyPassword){
-          SnackBarUtility.showCustomSnackbar(title: 'Password Error', message: 'Passwords do not match', icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor,));
-        }else{
+        if (password != verifyPassword) {
+          SnackBarUtility.showCustomSnackbar(
+              title: 'Password Error',
+              message: 'Passwords do not match',
+              icon: Icon(
+                Icons.error_outline_outlined,
+                color: ColorsUtility.redColor,
+              ));
+        } else {
           UserCredential credential = await firebaseAuth
               .createUserWithEmailAndPassword(email: email, password: password);
           String downloadUrl = "";
-          if(image != null && image.path != ""){
+          if (image != null && image.path != "") {
             print("about to download");
             downloadUrl = await _uploadToStorage(image);
           }
@@ -135,21 +146,31 @@ class AuthController extends GetxController {
               .collection('users')
               .doc(credential.user!.uid)
               .set(user.toJson());
-          SnackBarUtility.showCustomSnackbar(title: 'Success', message: 'Account Created', icon:  Icon(Icons.check_circle_outline, color: ColorsUtility.appBarIconColor,));
+          SnackBarUtility.showCustomSnackbar(
+              title: 'Success',
+              message: 'Account Created',
+              icon: Icon(
+                Icons.check_circle_outline,
+                color: ColorsUtility.appBarIconColor,
+              ));
           setIsRegisteringLoading(isRegistering: false);
-
         }
-
       } else {
-        SnackBarUtility.showCustomSnackbar(title: 'Field Error', message: 'Please enter all fields', icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
+        SnackBarUtility.showCustomSnackbar(
+            title: 'Field Error',
+            message: 'Please enter all fields',
+            icon: Icon(Icons.error_outline_outlined,
+                color: ColorsUtility.redColor));
         setIsRegisteringLoading(isRegistering: false);
-
       }
     } catch (e) {
       print("on ERROR ${e.toString()}");
-      SnackBarUtility.showCustomSnackbar(title: 'Error signing up', message: e.toString(), icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
+      SnackBarUtility.showCustomSnackbar(
+          title: 'Error signing up',
+          message: e.toString(),
+          icon: Icon(Icons.error_outline_outlined,
+              color: ColorsUtility.redColor));
       setIsRegisteringLoading(isRegistering: false);
-
     }
   }
 
@@ -161,16 +182,24 @@ class AuthController extends GetxController {
             email: email, password: password);
         print('log success');
         setIsLoggingLoading(isLoading: false);
-
       } else {
         setIsLoggingLoading(isLoading: false);
-        SnackBarUtility.showCustomSnackbar(title: 'Error', message: 'Fields can not be empty', icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
+        SnackBarUtility.showCustomSnackbar(
+            title: 'Error',
+            message: 'Fields can not be empty',
+            icon: Icon(Icons.error_outline_outlined,
+                color: ColorsUtility.redColor));
       }
     } catch (e) {
       setIsLoggingLoading(isLoading: false);
-      SnackBarUtility.showCustomSnackbar(title: 'Error logging in', message: e.toString(), icon:  Icon(Icons.error_outline_outlined, color: ColorsUtility.redColor));
+      SnackBarUtility.showCustomSnackbar(
+          title: 'Error logging in',
+          message: e.toString(),
+          icon: Icon(Icons.error_outline_outlined,
+              color: ColorsUtility.redColor));
     }
   }
+
   //Google Sign In
   signInWithGoogle() async {
     //begin interactive sign in
@@ -181,26 +210,59 @@ class AuthController extends GetxController {
 
     //create a new credential for user
     final credential = GoogleAuthProvider.credential(
-        accessToken: gAuth.accessToken,
-        idToken: gAuth.idToken
-    );
+        accessToken: gAuth.accessToken, idToken: gAuth.idToken);
 
     //get user details
     final String name = gUser.displayName ?? '';
     final String email = gUser.email ?? '';
     final String photoUrl = gUser.photoUrl ?? '';
 
-
     //finally, lets sign in
-    final UserCredential userCredential =  await firebaseAuth.signInWithCredential(credential);
-    final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
-    final DocumentSnapshot userDoc = await usersCollection.doc(userCredential.user?.uid).get();
+    final UserCredential userCredential =
+        await firebaseAuth.signInWithCredential(credential);
+    final CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('users');
+    final DocumentSnapshot userDoc =
+        await usersCollection.doc(userCredential.user?.uid).get();
 
     if (!userDoc.exists) {
       print("inside does not exists");
       userModel.User user = userModel.User(
           name: name,
-          uid: userCredential.user!.uid ,
+          uid: userCredential.user!.uid,
+          email: email,
+          profilePhoto: "",
+          country: "",
+          gender: "");
+
+      firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set(user.toJson());
+    }
+  }
+
+  signInWithApple() async {
+    final appleProvider = AppleAuthProvider();
+    appleProvider.addScope('email');
+    UserCredential userCredential =
+        await firebaseAuth.signInWithProvider(appleProvider);
+
+    final CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('users');
+    final DocumentSnapshot userDoc =
+        await usersCollection.doc(userCredential.user?.uid).get();
+    print(userCredential.toString());
+    if (!userDoc.exists) {
+      final String name = userCredential.additionalUserInfo?.profile?['name'] ??
+          userCredential.toString();
+      final String email =
+          userCredential.additionalUserInfo?.profile?['email'] ?? 'apple mail';
+
+      print("inside does not exists");
+      userModel.User user = userModel.User(
+          name: name,
+          uid: userCredential.user!.uid,
           email: email,
           profilePhoto: "",
           country: "",
@@ -216,7 +278,7 @@ class AuthController extends GetxController {
   Future<userModel.User?> getUser({required userId}) async {
     try {
       DocumentSnapshot doc =
-      await firestore.collection('users').doc(userId).get();
+          await firestore.collection('users').doc(userId).get();
 
       userModel.User user = userModel.User.fromSnap(doc);
 
@@ -232,6 +294,45 @@ class AuthController extends GetxController {
           country: "",
           gender: "");*/
     }
+  }
+
+  deleteAccount() async {
+    print("tobedeleted user uid = ${authController.user.uid}");
+    final DocumentSnapshot documentSnapshot =
+        await firestore.collection('users').doc(authController.user.uid).get();
+    userModel.User toBeDeletedUser = userModel.User.fromSnap(documentSnapshot);
+
+    //retrieving users books
+    final QuerySnapshot bookSnapshots = await firestore
+        .collection('users')
+        .doc(authController.user.uid)
+        .collection('books')
+        .get();
+
+    //delete every book of the user
+    for (final DocumentSnapshot bookSnapshot in bookSnapshots.docs) {
+      Book toBeDeletedBook = Book.fromSnap(bookSnapshot);
+      try {
+        Get.find<BookController>().deleteBook(toBeDeletedBook);
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    //deleting profile picutre of the user
+    if (toBeDeletedUser.profilePhoto.isNotEmpty) {
+      try{
+        await firebaseStorage.refFromURL(toBeDeletedUser.profilePhoto).delete();
+      }catch(e){
+        print(e);
+      }
+    }
+
+    //delete firestore document
+    await firestore.collection('users').doc(authController.user.uid).delete();
+
+    //delete from firebase auth
+    authController.user.delete();
   }
 
   signOut() async {

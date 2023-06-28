@@ -45,7 +45,7 @@ class BookController extends GetxController {
 
 
   @override
-  void onInit() {
+  void onReady() {
     super.onInit();
     _bookList.bindStream(firestore
         .collection('users')

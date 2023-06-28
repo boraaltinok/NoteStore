@@ -28,7 +28,7 @@ class ConnectivityController extends GetxController {
         Get.offAll(() => const NoConnectionPage());
       } else if (_isConnected.value == true) {
         if (firebaseAuth.currentUser == null) {
-          print("here3");
+          print("about to go to login screen connectivity controller");
           //Get.offAll(() => SignUpScreen());
           Get.offAll(() => LoginScreen());
 

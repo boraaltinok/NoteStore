@@ -59,6 +59,14 @@ const subtitle = 'subtitle';
 const withParam = 'withParam';
 const or = 'or';
 const signInWithGoogle = 'signInWithGoogle';
+const signInWithApple = 'signInWithApple';
+const deleteAccount ='deleteAccount';
+const cancel = 'cancel';
+const delete = 'delete';
+const noteStoreNotification = 'noteStoreNotification';
+const deletingYourAccount = 'deletingYourAccount';
+
+const sureAboutAccountDeletion = 'sureAboutAccountDeletion';
 
 const turkish = 'turkish';
 const english = 'english';

@@ -121,11 +121,63 @@ class _BooksPageState extends State<BooksPage> {
                   ),
                 ),
                 GestureDetector(
+                  onTap: () async {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor: ColorsUtility.scaffoldBackgroundColor,
+                          title: Text(
+                            'Confirm Delete',
+                            style: TextStyleUtility.textStyleBookInfoDialog,
+                          ),
+                          content: Text(translation.sureAboutAccountDeletion.locale,
+                              style: TextStyleUtility.textStyleBookInfoDialog),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: Text(translation.cancel.locale,
+                                  style: TextStyleUtility.textStyleBookInfoDialog),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text(translation.delete.locale,
+                                  style: TextStyleUtility.dangerTextStyle),
+                            ),
+                          ],
+                        );
+                      },
+                    ).then((confirmed) async {
+                      if (confirmed != null && confirmed) {
+                        SnackBarUtility.showCustomSnackbar(
+                            title: translation.noteStoreNotification.locale,
+                            message: translation.deletingYourAccount.locale,
+                            icon: const Icon(Icons.delete_forever));
+                        // Code to delete the document goes here
+                        await authController.deleteAccount();
+                        //Get.off(() => const LoginP());
+                      }
+                    });
+
+                  },
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.delete_forever,
+                      color: ColorsUtility.appBarIconColor,
+                    ),
+                    title: Text(
+                      translation.deleteAccount.locale,
+                      style: TextStyleUtility.textStyleBookInfoDialog
+                          .copyWith(fontSize: FontSizeUtility.font15),
+                    ),
+                  ),
+                ),
+                GestureDetector(
                   onTap: () {
                     authController.signOut();
                     SnackBarUtility.showCustomSnackbar(
-                        title: "NoteStore Notification",
-                        message: "Logging out...",
+                        title: translation.noteStoreNotification.locale,
+                        message: translation.logout.locale,
                         icon: const Icon(Icons.logout));
                   },
                   child: ListTile(

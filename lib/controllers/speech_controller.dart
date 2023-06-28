@@ -17,7 +17,7 @@ class SpeechController extends GetxController {
   late Rx<RecorderController> _recorderController;
 
   final Rx<bool> _isRecorderReady = false.obs;
-  final audioPlayer = AudioPlayer();
+  late AudioPlayer audioPlayer;
   final Rx<bool> _isPlaying = false.obs;
   final Rx<Duration> _duration = Duration.zero.obs;
   final Rx<Duration> _position = Duration.zero.obs;
@@ -51,6 +51,25 @@ class SpeechController extends GetxController {
   updateNoteId(String noteId) {
     _noteId.value = noteId;
   }
+
+  void initAudioPlayer(){
+    audioPlayer = AudioPlayer();
+
+    audioPlayer.onDurationChanged.listen((newDuration) {
+      _duration.value = newDuration;
+    });
+
+    audioPlayer.onPositionChanged.listen((newPosition) {
+      _position.value = newPosition;
+
+      audioPlayer.onPlayerComplete.listen((event) {
+        _isPlaying.value = false;
+        _position.value = Duration.zero;
+      });
+    });
+  }
+
+
 
   Future initRecorder() async {
     final status = await Permission.microphone.request();
@@ -97,18 +116,12 @@ class SpeechController extends GetxController {
     recorder.setSubscriptionDuration(
       const Duration(milliseconds: 500),
     );
-    audioPlayer.onDurationChanged.listen((newDuration) {
-      _duration.value = newDuration;
-    });
-
-    audioPlayer.onPositionChanged.listen((newPosition) {
-      _position.value = newPosition;
-    });
   }
 
   Future disposeControllers() async {
     recorder.closeRecorder();
     audioPlayer.dispose();
+    print("audioplayer disposed");
     _recorderController.value.removeListener(() {});
     _recorderController.value.dispose();
     _isRecorderPaused.value = false;
@@ -191,7 +204,7 @@ class SpeechController extends GetxController {
     try{    await audioPlayer.play(UrlSource(url));
     }catch(e){print(e);}
 
-    audioPlayer.onDurationChanged.listen((newDuration) {
+    /*audioPlayer.onDurationChanged.listen((newDuration) {
       _duration.value = newDuration;
     });
 
@@ -201,7 +214,7 @@ class SpeechController extends GetxController {
     audioPlayer.onPlayerComplete.listen((event) {
       _isPlaying.value = false;
       _position.value = Duration.zero;
-    });
+    });*/
   }
 
   Future pauseAudio() async {

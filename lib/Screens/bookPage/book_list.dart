@@ -11,7 +11,6 @@ import '../../Utils/QuotesUtility.dart';
 import 'BookCard.dart';
 
 class BookList extends StatefulWidget {
-
   const BookList({Key? key}) : super(key: key);
 
   @override
@@ -23,7 +22,6 @@ class _BookListState extends State<BookList> {
 
   late QuotesUtility quotesUtility;
   late List randomQuote;
-
 
   @override
   void initState() {
@@ -45,54 +43,68 @@ class _BookListState extends State<BookList> {
           children: [
             Expanded(
                 flex: 10,
-                child: bookController.bookList.isEmpty ?Padding(
-                  padding: PaddingUtility.scaffoldBodyGeneralPadding * 2,
-                  child: Center(child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(randomQuote[0],textAlign: TextAlign.center, style: GoogleFonts.petitFormalScript(color: ColorsUtility.hintTextColor, fontWeight: FontWeight.bold, fontSize: 18),),
-                      Text("-${randomQuote[1]}",textAlign: TextAlign.center, style: GoogleFonts.petitFormalScript(color: ColorsUtility.hintTextColor, fontWeight: FontWeight.bold, fontSize: 14),),
-
-                    ],
-                  ),),
-                ) :GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 4/5,
-                      crossAxisSpacing: 15,
-                      mainAxisSpacing: 15
-                    ),
-                    itemCount: bookController.bookList.length,
-                    itemBuilder: (ctx, i) {
-                      return InkWell(
-                        child: Container(
-                          decoration: BoxDecoration(
-
+                child: bookController.bookList.isEmpty
+                    ? Padding(
+                        padding: PaddingUtility.scaffoldBodyGeneralPadding * 2,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                randomQuote[0],
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.petitFormalScript(
+                                    color: ColorsUtility.hintTextColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                              ),
+                              Text(
+                                "-${randomQuote[1]}",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.petitFormalScript(
+                                    color: ColorsUtility.hintTextColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
+                              ),
+                            ],
                           ),
-                          //color: Colors.red,
-                          constraints: const BoxConstraints(
-                              minHeight: 80, maxHeight: 500),
-                          child: BookCard(
-                              book: bookController.bookList[i],
-                              onDelete: () {
-                                bookController.deleteBook(
-                                    bookController.bookList[i]);
-                              }),
                         ),
-                        onTap: () {
-                          print("ontap");
-                          Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        NotesPage(bookController.bookList[i]!)));
-                        },
-                        onLongPress: (){
-                          bookController.onBookLongPressed();
-                        },
-                      );
-                    })
-                ),
+                      )
+                    : GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                childAspectRatio: 4 / 5,
+                                crossAxisSpacing: 15,
+                                mainAxisSpacing: 15),
+                        itemCount: bookController.bookList.length,
+                        itemBuilder: (ctx, i) {
+                          return InkWell(
+                            child: Container(
+                              decoration: BoxDecoration(),
+                              //color: Colors.red,
+                              constraints: const BoxConstraints(
+                                  minHeight: 80, maxHeight: 500),
+                              child: BookCard(
+                                  book: bookController.bookList[i],
+                                  onDelete: () {
+                                    bookController
+                                        .deleteBook(bookController.bookList[i]);
+                                  }),
+                            ),
+                            onTap: () {
+                              print("ontap");
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => NotesPage(
+                                          bookController.bookList[i]!)));
+                            },
+                            onLongPress: () {
+                              bookController.onBookLongPressed();
+                            },
+                          );
+                        })),
           ],
         ),
       );
