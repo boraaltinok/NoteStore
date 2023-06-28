@@ -24,8 +24,8 @@ https://play.google.com/store/apps/details?id=com.notestore.mynotesv2&gl=TR
 
 ## Installation
 
-- App Store: [Download NoteStore on the App Store]([[https://www.appstorelink.com/notestore])
-- Google Play Store: [Download NoteStore on Google Play]([https://play.google.com/store/apps/details?id=com.notestore.mynotesv2&gl=TR])
+- App Store: [Download NoteStore on the App Store](https://www.appstorelink.com/notestore)
+- Google Play Store: [Download NoteStore on Google Play](https://play.google.com/store/apps/details?id=com.notestore.mynotesv2&gl=TR)
 
 ## Usage
 
